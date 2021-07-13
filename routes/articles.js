@@ -4,8 +4,8 @@ var articleRepo = require('../repositories/articles')
 var moment = require('moment')
 
 /* GET users listing. */
-router.post('/', async function (err, req, res, next) {
-    res.send(await articleRepo.getAllArticles(0, 2))
+router.post('/', async function (req, res, next) {
+    res.send(await articleRepo.getAllArticles())
 });
 
 router.post('/count', async function (req, res, next) {
@@ -36,7 +36,7 @@ router.put('/update/:title/:image/:content/:published/:id', async function (req,
 });
 
 router.delete('/delete/:id', async function (req, res, next) {
-    res.send('Successfully deleted article with ID ' + req.body.id + '.\nStatus :' + await articleRepo.deleteArticle(req.params.id))
+    res.send('Successfully deleted article with ID ' + req.params.id + '.\nStatus :' + await articleRepo.deleteArticle(req.params.id))
 });
 
 router.get('/search/:searchtext', async function (req, res, next) {

@@ -6,7 +6,7 @@ module.exports = {
     async countTags() {
         return await Tags.count()
     },
-    async getAllTags(offset, limit) {
+    async getAllTags(offset = 0, limit = 10) {
         return await Tags.findAll({
             offset: offset,
             limit: limit,
@@ -29,10 +29,13 @@ module.exports = {
             createdAt: tagData.createdAt,
             updatedAt: tagData.updatedAt,
             UserId: tagData.UserId,
-            where: {
-                id: tagData.id
+        },
+            {
+                where: {
+                    id: articleData.id
+                },
             }
-        })
+        )
     },
     async deleteTag(id) {
         return await Tags.destroy({

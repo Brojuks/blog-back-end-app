@@ -7,7 +7,7 @@ module.exports = {
     },
 
     //For pagination with offset meannig to skip instances/rows, and limit meaning to Fetch limited instances/rows(10 for example)
-    async getAllProjects(offset, limit) {
+    async getAllProjects(offset = 0, limit = 10) {
         return await Projects.findAll({
             offset: offset,
             limit: limit,
@@ -44,10 +44,13 @@ module.exports = {
             content: projectData.content,
             published: projectData.published,
             updatedAt: projectData.updatedAt,
-            where: {
-                id: projectData.id
+        },
+            {
+                where: {
+                    id: articleData.id
+                },
             }
-        })
+        )
     },
 
     async deleteProject(id) {

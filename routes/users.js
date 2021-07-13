@@ -4,7 +4,7 @@ var userRepo = require('../repositories/user')
 var moment = require('moment')
 
 /* GET users listing. */
-router.post('/', async function (err, req, res, next) {
+router.post('/', async function (req, res, next) {
   res.send(await userRepo.getAllUsers())
 });
 
