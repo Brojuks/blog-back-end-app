@@ -7,7 +7,7 @@ router.get('/', async function (req, res, next) {
     title: 'Nunjucks example'
   }
 
-  res.render('index.njk', data)
+  res.render('index.html', data)
 })
 
 module.exports = router;
