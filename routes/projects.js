@@ -1,7 +1,6 @@
 var express = require('express');
 var router = express.Router();
 var projectRepo = require('../repositories/projects')
-var moment = require('moment')
 
 /* GET users listing. */
 router.post('/', async function (req, res, next) {
@@ -19,8 +18,6 @@ router.post('/add', async function (req, res, next) {
     Project.content = req.body.content
     Project.published = req.body.published
     Project.UserId = req.body.UserId
-    Project.createdAt = moment().format('YYYY/MM/DD hh:mm:ss')
-    Project.updatedAt = moment().format('YYYY/MM/DD hh:mm:ss')
     res.send(await projectRepo.addProject(Project))
 });
 
@@ -31,7 +28,6 @@ router.put('/update', async function (req, res, next) {
     Project.image = req.body.image
     Project.content = req.body.content
     Project.published = req.body.published
-    Project.updatedAt = moment().format('YYYY/MM/DD hh:mm:ss')
     res.send(await projectRepo.updateProject(Project))
 });
 

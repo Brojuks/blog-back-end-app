@@ -1,7 +1,6 @@
 var express = require('express');
 var router = express.Router();
 var userRepo = require('../repositories/user')
-var moment = require('moment')
 
 /* GET users listing. */
 router.post('/', async function (req, res, next) {
@@ -18,8 +17,6 @@ router.post('/add', async function (req, res, next) {
   User.username = req.body.username
   User.email = req.body.email
   User.password = req.body.password
-  User.createdAt = moment().format('YYYY/MM/DD hh:mm:ss')
-  User.updatedAt = moment().format('YYYY/MM/DD hh:mm:ss')
   res.send(await userRepo.addUser(User))
 });
 
@@ -28,7 +25,6 @@ router.put('/update', async function (req, res, next) {
   User.username = req.body.username
   User.email = req.body.email
   User.password = req.body.password
-  User.updatedAt = moment().format('YYYY/MM/DD hh:mm:ss')
   res.send(await userRepo.updateUser(User))
 });
 

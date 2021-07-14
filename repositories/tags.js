@@ -17,8 +17,6 @@ module.exports = {
             where: { tag: tagData.tag, },
             defaults: {
                 tag: tagData.tag,
-                createdAt: tagData.createdAt,
-                updatedAt: tagData.updatedAt,
                 UserId: tagData.UserId
             }
         })
@@ -26,8 +24,6 @@ module.exports = {
     async updateTag(tagData) {
         return await Tags.update({
             tag: tagData.tag,
-            createdAt: tagData.createdAt,
-            updatedAt: tagData.updatedAt,
             UserId: tagData.UserId,
         },
             {

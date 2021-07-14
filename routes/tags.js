@@ -1,7 +1,6 @@
 var express = require('express');
 var router = express.Router();
 var tagRepo = require('../repositories/tags')
-var moment = require('moment')
 
 /* GET users listing. */
 router.post('/', async function (req, res, next) {
@@ -16,8 +15,6 @@ router.post('/add', async function (req, res, next) {
     let Tag = {}
     Tag.tag = req.body.tag
     Tag.UserId = req.body.UserId
-    Tag.createdAt = moment().format('YYYY/MM/DD hh:mm:ss')
-    Tag.updatedAt = moment().format('YYYY/MM/DD hh:mm:ss')
     res.send(await tagRepo.addTag(Tag))
 });
 
@@ -26,7 +23,6 @@ router.put('/update', async function (req, res, next) {
     Tag.id = req.body.id
     Tag.tag = req.body.tag
     Tag.UserId = req.body.UserId
-    Tag.updatedAt = moment().format('YYYY/MM/DD hh:mm:ss')
     res.send(await tagRepo.updateTag(Tag))
 });
 

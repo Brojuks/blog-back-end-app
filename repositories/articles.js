@@ -32,8 +32,6 @@ module.exports = {
             content: articleData.content,
             published: articleData.published,
             UserId: articleData.UserId,
-            createdAt: articleData.createdAt,
-            updatedAt: articleData.updatedAt
         })
     },
 
@@ -43,7 +41,6 @@ module.exports = {
             image: articleData.image,
             content: articleData.content,
             published: articleData.published,
-            updatedAt: articleData.updatedAt,
         },
             {
                 where: {

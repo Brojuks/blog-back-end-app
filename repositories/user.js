@@ -17,8 +17,6 @@ module.exports = {
             username: userData.username,
             email: userData.email,
             password: userData.password,
-            createdAt: userData.createdAt,
-            updatedAt: userData.updatedAt
         },
             {
                 where: {
@@ -32,7 +30,6 @@ module.exports = {
             username: userData.username,
             email: userData.email,
             password: userData.password,
-            updatedAt: userData.updatedAt,
             where: {
                 id: userData.id
             }
