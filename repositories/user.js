@@ -1,9 +1,9 @@
-const { User } = require('../models')
+const { Users } = require('../models')
 const { Op } = require("sequelize");
 
 module.exports = {
     async countUsers() {
-        return await User.count()
+        return await Users.count()
     },
     async getAllUsers(offset = 0, limit = 10) {
         return await User.findAll({
@@ -13,7 +13,7 @@ module.exports = {
         })
     },
     async addUser(userData) {
-        return await User.findOrCreate({
+        return await Users.findOrCreate({
             username: userData.username,
             email: userData.email,
             password: userData.password,
@@ -26,7 +26,7 @@ module.exports = {
         )
     },
     async updateUser(userData) {
-        return await User.update({
+        return await Users.update({
             username: userData.username,
             email: userData.email,
             password: userData.password,
@@ -36,14 +36,14 @@ module.exports = {
         })
     },
     async deleteUser(id) {
-        return await User.destroy({
+        return await Users.destroy({
             where: {
                 id: id
             }
         })
     },
     async searchForUser(searchText) {
-        return await User.findAndCountAll({
+        return await Users.findAndCountAll({
             attributes: { exclude: ['password'] },
             where: {
                 [Op.or]: [
