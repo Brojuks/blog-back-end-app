@@ -6,7 +6,7 @@ module.exports = {
         return await Users.count()
     },
     async getAllUsers(offset = 0, limit = 10) {
-        return await User.findAll({
+        return await Users.findAll({
             attributes: { exclude: ['password'] },
             offset: offset,
             limit: limit,

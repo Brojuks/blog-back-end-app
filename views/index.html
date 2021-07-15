@@ -1,53 +1,60 @@
-{% extends 'navbar.html' %}
+{% extends 'layout.html' %}
 {% block content %}
-<!-- Content Wrapper. Contains page content -->
-<div class="content-wrapper" style="margin-left: 0px;">
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-        <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-6">
-                    <h1>Blank Page</h1>
-                </div>
-                <div class="col-sm-6">
-                    <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item">
-                            <a href="#">Home</a>
-                        </li>
-                        <li class="breadcrumb-item active">Blank Page</li>
-                    </ol>
-                </div>
-            </div>
+
+{% from "dependencies.html" import fetchData %}
+
+{% macro addCard(bgColor='bg-gradient-success', number=0, title='title',icon='fas fa-newspaper',id='',href='#') %}
+<div class="col-12 col-sm-4">
+    <div class="small-box {{bgColor}}">
+        <div class="inner">
+            <h3 id="{{id}}">{{number}}</h3>
+            <p>{{title}}</p>
         </div>
-        <!-- /.container-fluid -->
-    </section>
-    <!-- Main content -->
-    <section class="content">
-        <!-- Default box -->
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title">Title</h3>
-                <div class="card-tools">
-                    <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
-                        <i class="fas fa-minus"></i>
-                    </button>
-                    <button type="button" class="btn btn-tool" data-card-widget="remove" title="Remove">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-            </div>
-            <div class="card-body">
-                Start creating your amazing application!
-            </div>
-            <!-- /.card-body -->
-            <div class="card-footer">
-                Footer
-            </div>
-            <!-- /.card-footer-->
+        <div class="icon">
+            <i class="{{icon}}"></i>
         </div>
-        <!-- /.card -->
-    </section>
-    <!-- /.content -->
+        <a href="{{href}}" class="small-box-footer">
+            More info <i class="fas fa-arrow-circle-right"></i>
+        </a>
+    </div>
 </div>
-<!-- /.content-wrapper -->
+{% endmacro %}
+
+<!-- Default box -->
+<div class="card card-outline card-info">
+    <div class="card-header">
+        <h3 class="card-title">Recap Report</h3>
+        <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                <i class="fas fa-minus"></i>
+            </button>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            {{addCard(bgColor='bg-gradient-success', number=0, title='Total User Registrations',icon='fas
+            fa-user-plus',id='usersNum',href='#')}}
+            {{fetchData(method='POST',urlExt='users/count',id='usersNum')}}
+
+            {{addCard(bgColor='bg-info', number=0, title='Total Articles',icon='fas
+            fa-newspaper',id='artsNum',href='#')}}
+            {{fetchData(method='POST',urlExt='articles/count',id='artsNum')}}
+
+            {{addCard(bgColor='bg-red', number=0, title='Total Tags',icon='fas fa-tag',id='tagsNum',href='#')}}
+            {{fetchData(method='POST',urlExt='tags/count',id='tagsNum')}}
+        </div>
+        <div class="row justify-content-center">
+            {{addCard(bgColor='bg-warning', number=0, title='Total Projects',icon='fas
+            fa-code',id='prjsNum',href='#')}}
+            {{fetchData(method='POST',urlExt='projects/count',id='prjsNum')}}
+
+        </div>
+    </div>
+    <!-- /.card-body -->
+    <div class="card-footer">
+    </div>
+    <!-- /.card-footer-->
+</div>
+<!-- /.card -->
+
 {% endblock %}
