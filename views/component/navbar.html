@@ -8,21 +8,38 @@
     <!-- Left navbar links -->
     <ul class="navbar-nav">
         <li class="nav-item d-none d-sm-inline-block">
+            {% if activePage == 'home' %}
+            <a href="/" class="nav-link active">Home</a>
+            {% else %}
             <a href="/" class="nav-link">Home</a>
-        </li>
-        <li class="nav-item d-none d-sm-inline-block">
-            <a href="/users" class="nav-link">users</a>
+            {% endif %}
         </li>
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown2" role="button" data-toggle="dropdown"
                 aria-haspopup="true" aria-expanded="false">
-                Help
+                Browse
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown2">
-                <a class="dropdown-item" href="#">FAQ</a>
-                <a class="dropdown-item" href="#">Support</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#">Contact</a>
+                {% if activePage == 'users' %}
+                <a class="dropdown-item active" href="/users">Users</a>
+                {% else %}
+                <a class="dropdown-item" href="/users">Users</a>
+                {% endif %}
+                {% if activePage == 'articles' %}
+                <a class="dropdown-item active" href="#">Articles</a>
+                {% else %}
+                <a class="dropdown-item" href="#">Articles</a>
+                {% endif %}
+                {% if activePage == 'projects' %}
+                <a class="dropdown-item active" href="#">Projects</a>
+                {% else %}
+                <a class="dropdown-item" href="#">Projects</a>
+                {% endif %}
+                {% if activePage == 'tags' %}
+                <a class="dropdown-item Active" href="#">Tags</a>
+                {% else %}
+                <a class="dropdown-item" href="#">Tags</a>
+                {% endif %}
             </div>
         </li>
     </ul>

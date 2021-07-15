@@ -1,9 +1,7 @@
 {% extends 'layout.html' %}
 
-{% from "dependencies.html" import fetchUserData %}
-
 {% block content %}
-{{fetchUserData(method='POST',urlExt='users',id='')}}
+
 <div class="row">
     <div class="col-12">
         <div class="card">
@@ -27,45 +25,34 @@
                 <table class="table table-hover text-nowrap">
                     <thead>
                         <tr id="tableTitles">
-                            {% for array in usersArray %}
-
-                            {% endfor %}
                             <th>ID</th>
-                            <th>User</th>
-                            <th>Date</th>
-                            <th>Status</th>
-                            <th>Reason</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Creation Date</th>
+                            <th>Last Update Date</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
+                        {% for user in usersArray %}
                         <tr>
-                            <td>183</td>
-                            <td>John Doe</td>
-                            <td>11-7-2014</td>
-                            <td><span class="tag tag-success">Approved</span></td>
-                            <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
+                            <th>{{ user.id }}</th>
+                            <th>{{ user.username }}</th>
+                            <th>{{ user.email }}</th>
+                            <th>{{ user.createdAt }}</th>
+                            <th>{{ user.updatedAt }}</th>
+                            <th><a class="btn bg-danger" data-bs-toggle="tooltip" data-bs-placement="left"
+                                    title="Delete">
+                                    <i class="fas fa-trash-alt"></i>
+                                </a>
+                                <a style="max-width: 40px !important;padding: auto !important; margin-left: 5px;"
+                                    class="btn bg-info" data-bs-toggle="tooltip" data-bs-placement="buttom"
+                                    title="Edit">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                            </th>
                         </tr>
-                        <tr>
-                            <td>219</td>
-                            <td>Alexander Pierce</td>
-                            <td>11-7-2014</td>
-                            <td><span class="tag tag-warning">Pending</span></td>
-                            <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
-                        </tr>
-                        <tr>
-                            <td>657</td>
-                            <td>Bob Doe</td>
-                            <td>11-7-2014</td>
-                            <td><span class="tag tag-primary">Approved</span></td>
-                            <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
-                        </tr>
-                        <tr>
-                            <td>175</td>
-                            <td>Mike Doe</td>
-                            <td>11-7-2014</td>
-                            <td><span class="tag tag-danger">Denied</span></td>
-                            <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
-                        </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
             </div>

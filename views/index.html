@@ -1,9 +1,8 @@
 {% extends 'layout.html' %}
 {% block content %}
 
-{% from "dependencies.html" import fetchData %}
-
-{% macro addCard(bgColor='bg-gradient-success', number=0, title='title',icon='fas fa-newspaper',id='',href='#') %}
+{% macro addCard(bgColor='bg-gradient-success', number, title='title',icon='fas
+fa-newspaper',id='',href='#') %}
 <div class="col-12 col-sm-4">
     <div class="small-box {{bgColor}}">
         <div class="inner">
@@ -32,22 +31,17 @@
     </div>
     <div class="card-body">
         <div class="row">
-            {{addCard(bgColor='bg-gradient-success', number=0, title='Total User Registrations',icon='fas
-            fa-user-plus',id='usersNum',href='#')}}
-            {{fetchData(method='POST',urlExt='users/count',id='usersNum')}}
+            {{addCard(bgColor='bg-gradient-success', number=usersNum, title='Total User Registrations',icon='fas
+            fa-user-plus',id='usersNum',href='/users')}}
 
-            {{addCard(bgColor='bg-info', number=0, title='Total Articles',icon='fas
+            {{addCard(bgColor='bg-info', number=articlesNum, title='Total Articles',icon='fas
             fa-newspaper',id='artsNum',href='#')}}
-            {{fetchData(method='POST',urlExt='articles/count',id='artsNum')}}
 
-            {{addCard(bgColor='bg-red', number=0, title='Total Tags',icon='fas fa-tag',id='tagsNum',href='#')}}
-            {{fetchData(method='POST',urlExt='tags/count',id='tagsNum')}}
+            {{addCard(bgColor='bg-red', number=tagsNum, title='Total Tags',icon='fas fa-tag',id='tagsNum',href='#')}}
         </div>
         <div class="row justify-content-center">
-            {{addCard(bgColor='bg-warning', number=0, title='Total Projects',icon='fas
+            {{addCard(bgColor='bg-warning', number=projectsNum, title='Total Projects',icon='fas
             fa-code',id='prjsNum',href='#')}}
-            {{fetchData(method='POST',urlExt='projects/count',id='prjsNum')}}
-
         </div>
     </div>
     <!-- /.card-body -->
