@@ -80,6 +80,7 @@
 
     <!-- AdminLTE Template -->
 
+    <!-- Bootstrap tooltip -->
     <script>
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
         var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
@@ -87,6 +88,91 @@
                 boundary: document.body // or document.querySelector('#boundary')
             })
         })
+    </script>
+    <!-- Bootstrap tooltip -->
+
+    <script>
+        $(".submitBtn").click(function () {
+            var frm = $(this).parent()
+            if (frm.prop("tagName") != "FORM") {
+                frm = $(this).attr('form')
+                if (!document.getElementById('' + frm + '').checkValidity())
+                    return;
+                frm = $("#" + frm + "")
+            }
+            console.log(frm.serialize());
+            console.log(frm.attr('method'))
+            console.log(frm.attr('action'))
+            $.ajax({
+                type: frm.attr('method'),
+                url: frm.attr('action'),
+                data: frm.serialize(),
+                success: function (data) {
+                    console.log('Submission was successful.');
+                    console.log(data);
+                    $(document).Toasts('create', {
+                        title: data[0],
+                        autohide: true,
+                        delay: 6500,
+                        icon: data[1],
+                        class: data[2],
+                        body: data[3]
+                    })
+                }
+            });
+            return false;
+        });
+    </script>
+
+    <script>
+        function onChange() {
+            const password = document.querySelector('#addUserPassword');
+            const confirm = document.querySelector('#addUserConfirmPass');
+            if (confirm.value === password.value) {
+                confirm.setCustomValidity('');
+            } else {
+                confirm.setCustomValidity('Passwords do not match');
+            }
+        }
+        function showpassword() {
+            if (document.getElementById('addUserPassword').type === 'password') {
+                document.getElementById('addUserPassword').type = 'text'
+                document.getElementById('password-addon-image').classList.replace("fa-eye-slash", "fa-eye")
+                hidden = 0
+            } else {
+                document.getElementById('addUserPassword').type = 'password'
+                document.getElementById('password-addon-image').classList.replace("fa-eye", "fa-eye-slash")
+            }
+        }
+        function showpassword1() {
+            if (document.getElementById('addUserConfirmPass').type === 'password') {
+                document.getElementById('addUserConfirmPass').type = 'text'
+                document.getElementById('confirmPassword-image').classList.replace("fa-eye-slash", "fa-eye")
+                hidden = 0
+            } else {
+                document.getElementById('addUserConfirmPass').type = 'password'
+                document.getElementById('confirmPassword-image').classList.replace("fa-eye", "fa-eye-slash")
+            }
+        }
+        (function () {
+            'use strict'
+
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            var forms = document.querySelectorAll('.needs-validation')
+
+            // Loop over them and prevent submission
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+        })()
     </script>
 
 </body>

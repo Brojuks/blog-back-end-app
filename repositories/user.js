@@ -14,16 +14,18 @@ module.exports = {
     },
     async addUser(userData) {
         return await Users.findOrCreate({
-            username: userData.username,
-            email: userData.email,
-            password: userData.password,
-        },
-            {
-                where: {
-                    id: articleData.id
-                },
+            where: {
+                [Op.or]: [
+                    { username: userData.username },
+                    { email: userData.email }
+                ]
+            },
+            defaults: {
+                username: userData.username,
+                email: userData.email,
+                password: userData.password,
             }
-        )
+        });
     },
     async updateUser(userData) {
         return await Users.update({

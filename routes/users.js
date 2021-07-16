@@ -13,11 +13,15 @@ router.post('/count', async function (req, res, next) {
 
 router.post('/add', async function (req, res, next) {
   let User = {}
-  User.id = req.body.id
   User.username = req.body.username
   User.email = req.body.email
   User.password = req.body.password
-  res.send(await userRepo.addUser(User))
+  let response = await userRepo.addUser(User)
+  if (response[1]) {
+    res.send(['User has been added successfully', 'fas fa-check-circle', 'm-2 bg-success'])
+  } else {
+    res.send(['An error has occured', 'fas fa-exclamation-triangle', 'm-2 bg-warning', 'The email or username have already been used!'])
+  }
 });
 
 router.put('/update', async function (req, res, next) {
@@ -25,11 +29,16 @@ router.put('/update', async function (req, res, next) {
   User.username = req.body.username
   User.email = req.body.email
   User.password = req.body.password
-  res.send(await userRepo.updateUser(User))
+  let response = await userRepo.updateUser(User)
+  res.send(response)
 });
 
 router.delete('/delete', async function (req, res, next) {
-  res.send('Successfully deleted user with ID ' + req.body.id + '.\nStatus :' + await userRepo.deleteUser(req.body.id))
+  let userIsDeleted = await userRepo.deleteUser(req.body.id)
+  if (userIsDeleted)
+    res.send(['Removed user successfully', 'fas fa-check-circle', 'm-2 bg-danger'])
+  else
+    res.send(['An error has occured', 'fas fa-exclamation-triangle', 'm-2 bg-warning'])
 });
 
 router.get('/search/:searchtext', async function (req, res, next) {
