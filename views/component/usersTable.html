@@ -1,0 +1,32 @@
+{% block usersTableContent %}
+
+{% for user in usersArray %}
+<tr>
+    <td>{{ user.id }}</td>
+    <td>{{ user.username }}</td>
+    <td>{{ user.email }}</td>
+    <td>{{ user.createdAt }}</td>
+    <td>{{ user.updatedAt }}</td>
+    <td style="position: relative;">
+        <form id="user{{user.id}}Form">
+            <button class="btn bg-danger DeleteBtn" title="Delete" type="button">
+                <i class="fas fa-trash-alt"></i>
+            </button>
+            <button style="max-width: 40px !important;padding: auto !important; margin-left: 5px;"
+                class="btn bg-info ModifyBtn" data-toggle="modal" data-target="#editUserModal" title="Edit"
+                type="button">
+                <i class="fas fa-edit"></i>
+            </button>
+            <input type="hidden" id="user{{user.id}}Id" name="id" value="{{user.id}}">
+        </form>
+    </td>
+</tr>
+{% endfor %}
+
+{% endblock %}
+
+{% block js %}
+<script>
+
+</script>
+{% endblock %}

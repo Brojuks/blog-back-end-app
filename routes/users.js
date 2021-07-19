@@ -3,9 +3,31 @@ var router = express.Router();
 var userRepo = require('../repositories/user')
 
 /* GET users listing. */
-router.post('/', async function (req, res, next) {
-  res.send(await userRepo.getAllUsers())
+router.get('/getUsers', async function (req, res, next) {
+  let users = await userRepo.getAllUsers()
+  let data = {
+    usersArray: users
+  }
+  res.render('component/usersTable.html', data)
 });
+
+router.post('/getByID', async function (req, res, next) {
+  res.send(await userRepo.getUserById(req.body.id))
+});
+router.post('/checkUserDuplicate', async function (req, res, next) {
+  let User = {}
+  User.username = req.body.username
+  User.email = req.body.email
+  User.id = req.body.id
+  let response = await userRepo.checkUserDuplicate(User)
+  if (response === null) {
+    res.send('');
+  }
+  else {
+    res.send(['An error has occured', 'fas fa-exclamation-triangle', 'm-2 bg-warning', 'The email or username have already been used!']);
+  }
+});
+
 
 router.post('/count', async function (req, res, next) {
   res.send('' + await userRepo.countUsers())
@@ -28,9 +50,12 @@ router.put('/update', async function (req, res, next) {
   let User = {}
   User.username = req.body.username
   User.email = req.body.email
-  User.password = req.body.password
-  let response = await userRepo.updateUser(User)
-  res.send(response)
+  User.id = req.body.id
+  let userIsModified = await userRepo.updateUser(User)
+  if (userIsModified)
+    res.send(['Modified user successfully', 'fas fa-check-circle', 'm-2 bg-success'])
+  else
+    res.send(['An error has occured', 'fas fa-exclamation-triangle', 'm-2 bg-success', 'The email or username have already been used!'])
 });
 
 router.delete('/delete', async function (req, res, next) {

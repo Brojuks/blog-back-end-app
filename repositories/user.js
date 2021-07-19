@@ -12,6 +12,30 @@ module.exports = {
             limit: limit,
         })
     },
+
+    async getUserById(id) {
+        return await Users.findOne({
+            attributes: { exclude: ['password'] },
+            where: {
+                id: id
+            }
+        });
+    },
+    async checkUserDuplicate(userData) {
+        return await Users.findOne({
+            attributes: { exclude: ['password'] },
+            where: {
+                id: {
+                    [Op.ne]: userData.id
+                },
+                [Op.or]: [
+                    { username: userData.username },
+                    { email: userData.email }
+                ]
+            }
+        });
+    },
+
     async addUser(userData) {
         return await Users.findOrCreate({
             where: {
@@ -31,11 +55,13 @@ module.exports = {
         return await Users.update({
             username: userData.username,
             email: userData.email,
-            password: userData.password,
-            where: {
-                id: userData.id
+        },
+            {
+                where: {
+                    id: userData.id
+                },
             }
-        })
+        )
     },
     async deleteUser(id) {
         return await Users.destroy({

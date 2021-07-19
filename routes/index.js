@@ -29,7 +29,6 @@ router.get('/users', async function (req, res, next) {
     title: 'Users',
     usersArray: users
   }
-
   res.render('pages/users.html', data)
 })
 module.exports = router;

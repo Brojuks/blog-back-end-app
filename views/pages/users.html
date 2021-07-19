@@ -36,32 +36,8 @@
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        {% for user in usersArray %}
-                        <tr>
-                            <th>{{ user.id }}</th>
-                            <th>{{ user.username }}</th>
-                            <th>{{ user.email }}</th>
-                            <th>{{ user.createdAt }}</th>
-                            <th>{{ user.updatedAt }}</th>
-                            <th>
-                                <form id="user{{user.id}}Form" action="users/delete" method="DELETE">
-                                    <button class="btn bg-danger submitBtn" data-bs-toggle="tooltip" title="Delete"
-                                        type="submit">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                    <a style="max-width: 40px !important;padding: auto !important; margin-left: 5px;"
-                                        class="btn bg-info" data-bs-toggle="tooltip" title="Edit">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    <input type="hidden" id="user{{user.id}}Id" name="id" value="{{user.id}}">
-                                    <input type="hidden" id="user{{user.id}}Username" name="username"
-                                        value="{{user.username}}">
-                                    <input type="hidden" id="user{{user.id}}Email" name="email" value="{{user.email}}">
-                                </form>
-                            </th>
-                        </tr>
-                        {% endfor %}
+                    <tbody id="usersTable">
+                        {% include "component/usersTable.html" %}
                     </tbody>
                 </table>
             </div>
@@ -84,19 +60,19 @@
             </div>
             <div class="modal-body">
 
-                <form id="addUser-form" action="users/add" method="POST" class="container needs-validation" novalidate>
+                <form id="addUser-form" class="container needs-validation" novalidate>
 
                     <div class="input-group has-validation mb-3">
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fas fa-envelope"></i></span>
                         </div>
-                        <input type="email" class="form-control" id="addUserEmail" name="email" placeholder="Email"
-                            required>
+                        <input type="email" class="form-control" onkeyup="checkEmail()" id="addUserEmail" name="email"
+                            placeholder="Email" required>
                         <div class="valid-feedback">
                             Looks good!
                         </div>
                         <div class="invalid-feedback">
-                            Please choose a valid email.
+                            Please choose a valid email, that ends with a valid domain name.
                         </div>
                     </div>
 
@@ -104,13 +80,13 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fas fa-user"></i></span>
                         </div>
-                        <input type="text" class="form-control" name="username" id="addUserUsername"
-                            placeholder="Username" required>
+                        <input type="text" class="form-control" onkeyup="checkUsername()" name="username"
+                            id="addUserUsername" placeholder="Username" required>
                         <div class="valid-feedback">
                             Looks good!
                         </div>
                         <div class="invalid-feedback">
-                            Please choose a valid username.
+                            Please choose a valid username that's between 2-25 characters.
                         </div>
                     </div>
 
@@ -121,7 +97,7 @@
                                     class="fas fa-eye-slash"></i></button>
                         </div>
                         <input type="password" onkeyup="onChange()" class="form-control" id="addUserPassword"
-                            placeholder="Password" required>
+                            placeholder="Password" autocomplete="off" required>
                         <div class="valid-feedback">
                             Looks good!
                         </div>
@@ -133,11 +109,11 @@
                     <div class="input-group has-validation mb-3">
                         <div class="input-group-prepend">
                             <button class="input-group-text" type="button" id="confirmPassword-addon"
-                                onclick="showpassword1()"><i id="confirmPassword-image"
+                                onclick="showConfirmPassword()"><i id="confirmPassword-image"
                                     class="fas fa-eye-slash"></i></button>
                         </div>
                         <input type="password" onkeyup="onChange()" name="password" class="form-control"
-                            id="addUserConfirmPass" placeholder="Confirm Password" required>
+                            id="addUserConfirmPass" placeholder="Confirm Password" autocomplete="off" required>
                         <div class="valid-feedback">
                             Looks good!
                         </div>
@@ -153,7 +129,8 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="submit" form="addUser-form" class="btn btn-primary submitBtn"><i class="fa fa-plus"></i>
+                <button id="addUserBtn" type="submit" form="addUser-form" class="btn btn-primary"><i
+                        class="fa fa-plus"></i>
                     Add</button>
             </div>
         </div>
@@ -161,5 +138,273 @@
 </div>
 <!-- ./ Add User Modal -->
 
+
+<!-- Edit User Modal -->
+
+<div class="modal fade" id="editUserModal" tabindex="-1" role="dialog" aria-labelledby="editUserModalTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editUserModalTitle">Modify User</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <form id="editUser-form" class="container needs-validation" novalidate>
+
+                    <div class="input-group has-validation mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                        </div>
+                        <input type="email" class="form-control" onkeyup="checkEditEmail()" id="editUserEmail"
+                            name="email" placeholder="Email" required>
+                        <div class="valid-feedback">
+                            Looks good!
+                        </div>
+                        <div class="invalid-feedback">
+                            Please choose a valid email, that ends with a valid domain name.
+                        </div>
+                    </div>
+
+                    <input type="hidden" id="editUserId" name="id" placeholder="ID">
+
+                    <div class="input-group has-validation mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"><i class="fas fa-user"></i></span>
+                        </div>
+                        <input type="text" class="form-control" onkeyup="checkEditUsername()" name="username"
+                            id="editUserUsername" placeholder="Username" required>
+                        <div class="valid-feedback">
+                            Looks good!
+                        </div>
+                        <div class="invalid-feedback">
+                            Please choose a valid username that's between 2-25 characters.
+                        </div>
+                    </div>
+
+                </form>
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button id="modifyUserBtn" type="submit" form="editUser-form" class="btn btn-primary"><i
+                        class="fa fa-user-edit"></i>
+                    Edit</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ./ Edit User Modal -->
+
+{% endblock %}
+
+{% block javascript %}
+
+<script>
+    function initTooltip() {
+        $(".DeleteBtn").hover(function () {
+            $(this).tooltip('show')
+        });
+        $(".ModifyBtn").hover(function () {
+            $(this).tooltip('show')
+        });
+    }
+    initTooltip()
+
+    initEvents()
+    function updateTable(url, tableId) {
+        $.ajax({
+            type: 'GET',
+            url: url,
+            success: function (data) {
+                console.log('table update was successful.');
+                document.getElementById(tableId).innerHTML = data
+                initEvents()
+                initTooltip()
+            }
+        })
+    }
+    $("#modifyUserBtn").click(function () {
+        var frm = $('#editUser-form')
+        if (!document.getElementById('editUser-form').checkValidity())
+            return;
+        $.ajax({
+            type: 'POST',
+            url: 'users/checkUserDuplicate',
+            data: frm.serialize(),
+            success: function (data) {
+                console.log(data);
+                if (data !== '') {
+                    $(document).Toasts('create', {
+                        title: data[0],
+                        autohide: true,
+                        delay: 6500,
+                        icon: data[1],
+                        class: data[2],
+                        body: data[3]
+                    })
+                } else {
+                    $.ajax({
+                        type: 'PUT',
+                        url: 'users/update',
+                        data: frm.serialize(),
+                        success: function (data) {
+                            console.log('Submission was successful.');
+                            console.log(data);
+                            $(document).Toasts('create', {
+                                title: data[0],
+                                autohide: true,
+                                delay: 6500,
+                                icon: data[1],
+                                class: data[2],
+                                body: data[3]
+                            })
+                            $('#editUserModal').modal('toggle')
+                            updateTable('users/getUsers', 'usersTable')
+                        }
+                    })
+                }
+            }
+        })
+        return false;
+    });
+
+    $("#addUserBtn").click(function () {
+        var frm = $('#addUser-form')
+        if (!document.getElementById('addUser-form').checkValidity())
+            return;
+        $.ajax({
+            type: 'POST',
+            url: 'users/add',
+            data: frm.serialize(),
+            success: function (data) {
+                console.log('Submission was successful.');
+                console.log(data);
+                $(document).Toasts('create', {
+                    title: data[0],
+                    autohide: true,
+                    delay: 6500,
+                    icon: data[1],
+                    class: data[2],
+                    body: data[3]
+                })
+                if (data[0] !== 'An error has occured')
+                    $('#addUserModal').modal('toggle')
+                updateTable('users/getUsers', 'usersTable')
+            }
+        });
+        return false;
+    });
+    function initEvents() {
+        $(".DeleteBtn").click(function () {
+            var frm = $(this).parent()
+            $.ajax({
+                type: 'DELETE',
+                url: 'users/delete',
+                data: frm.serialize(),
+                success: function (data) {
+                    console.log('Submission was successful.');
+                    console.log(data);
+                    $(document).Toasts('create', {
+                        title: data[0],
+                        autohide: true,
+                        delay: 6500,
+                        icon: data[1],
+                        class: data[2],
+                        body: data[3]
+                    })
+                    updateTable('users/getUsers', 'usersTable')
+                }
+            });
+            return false;
+        });
+
+        $(".ModifyBtn").click(function () {
+            var frm = $(this).parent()
+            console.log(frm)
+            $.ajax({
+                type: 'POST',
+                url: 'users/getByID',
+                data: frm.serialize(),
+                success: function (data) {
+                    console.log('Submission was successful.');
+                    console.log(data);
+                    $('#editUserModal').modal('show')
+                    document.getElementById('editUserEmail').value = data.email
+                    document.getElementById('editUserUsername').value = data.username
+                    document.getElementById('editUserId').value = data.id
+                }
+            });
+            return false;
+        });
+    }
+    function onChange() {
+        const password = document.querySelector('#addUserPassword');
+        const confirm = document.querySelector('#addUserConfirmPass');
+        if (confirm.value === password.value) {
+            confirm.setCustomValidity('');
+        } else {
+            confirm.setCustomValidity('Passwords do not match');
+        }
+    }
+    function checkEmail() {
+        const email = document.querySelector('#addUserEmail');
+        var emailtest = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+        if (emailtest.test(email.value)) {
+            email.setCustomValidity('');
+        } else {
+            email.setCustomValidity('This email is not valid!');
+        }
+    }
+    function checkUsername() {
+        const username = document.querySelector('#addUserUsername');
+        if (username.value.length >= 2 && username.value.length <= 25) {
+            username.setCustomValidity('');
+        } else {
+            username.setCustomValidity('This username is not valid!');
+        }
+    }
+    function checkEditEmail() {
+        const email = document.querySelector('#editUserEmail');
+        var emailtest = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+        if (emailtest.test(email.value)) {
+            email.setCustomValidity('');
+        } else {
+            email.setCustomValidity('This email is not valid!');
+        }
+    }
+    function checkEditUsername() {
+        const username = document.querySelector('#editUserUsername');
+        if (username.value.length >= 2 && username.value.length <= 25) {
+            username.setCustomValidity('');
+        } else {
+            username.setCustomValidity('This username is not valid!');
+        }
+    }
+    function showpassword() {
+        if (document.getElementById('addUserPassword').type === 'password') {
+            document.getElementById('addUserPassword').type = 'text'
+            document.getElementById('password-addon-image').classList.replace("fa-eye-slash", "fa-eye")
+            hidden = 0
+        } else {
+            document.getElementById('addUserPassword').type = 'password'
+            document.getElementById('password-addon-image').classList.replace("fa-eye", "fa-eye-slash")
+        }
+    }
+    function showConfirmPassword() {
+        if (document.getElementById('addUserConfirmPass').type === 'password') {
+            document.getElementById('addUserConfirmPass').type = 'text'
+            document.getElementById('confirmPassword-image').classList.replace("fa-eye-slash", "fa-eye")
+            hidden = 0
+        } else {
+            document.getElementById('addUserConfirmPass').type = 'password'
+            document.getElementById('confirmPassword-image').classList.replace("fa-eye", "fa-eye-slash")
+        }
+    }
+</script>
 
 {% endblock %}

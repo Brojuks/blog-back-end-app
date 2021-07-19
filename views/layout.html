@@ -45,7 +45,7 @@
                             <div class="col-sm-6">
                                 <ol class="breadcrumb float-sm-right">
                                     <li class="breadcrumb-item">
-                                        <a href="#">Home</a>
+                                        <a href="/">Home</a>
                                     </li>
                                     <li class="breadcrumb-item active">{{title}}</li>
                                     {% block extrabreadcrumb %}
@@ -80,80 +80,11 @@
 
     <!-- AdminLTE Template -->
 
-    <!-- Bootstrap tooltip -->
-    <script>
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl, {
-                boundary: document.body // or document.querySelector('#boundary')
-            })
-        })
-    </script>
-    <!-- Bootstrap tooltip -->
+    {% block javascript %}
+
+    {% endblock %}
 
     <script>
-        $(".submitBtn").click(function () {
-            var frm = $(this).parent()
-            if (frm.prop("tagName") != "FORM") {
-                frm = $(this).attr('form')
-                if (!document.getElementById('' + frm + '').checkValidity())
-                    return;
-                frm = $("#" + frm + "")
-            }
-            console.log(frm.serialize());
-            console.log(frm.attr('method'))
-            console.log(frm.attr('action'))
-            $.ajax({
-                type: frm.attr('method'),
-                url: frm.attr('action'),
-                data: frm.serialize(),
-                success: function (data) {
-                    console.log('Submission was successful.');
-                    console.log(data);
-                    $(document).Toasts('create', {
-                        title: data[0],
-                        autohide: true,
-                        delay: 6500,
-                        icon: data[1],
-                        class: data[2],
-                        body: data[3]
-                    })
-                }
-            });
-            return false;
-        });
-    </script>
-
-    <script>
-        function onChange() {
-            const password = document.querySelector('#addUserPassword');
-            const confirm = document.querySelector('#addUserConfirmPass');
-            if (confirm.value === password.value) {
-                confirm.setCustomValidity('');
-            } else {
-                confirm.setCustomValidity('Passwords do not match');
-            }
-        }
-        function showpassword() {
-            if (document.getElementById('addUserPassword').type === 'password') {
-                document.getElementById('addUserPassword').type = 'text'
-                document.getElementById('password-addon-image').classList.replace("fa-eye-slash", "fa-eye")
-                hidden = 0
-            } else {
-                document.getElementById('addUserPassword').type = 'password'
-                document.getElementById('password-addon-image').classList.replace("fa-eye", "fa-eye-slash")
-            }
-        }
-        function showpassword1() {
-            if (document.getElementById('addUserConfirmPass').type === 'password') {
-                document.getElementById('addUserConfirmPass').type = 'text'
-                document.getElementById('confirmPassword-image').classList.replace("fa-eye-slash", "fa-eye")
-                hidden = 0
-            } else {
-                document.getElementById('addUserConfirmPass').type = 'password'
-                document.getElementById('confirmPassword-image').classList.replace("fa-eye", "fa-eye-slash")
-            }
-        }
         (function () {
             'use strict'
 
