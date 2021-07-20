@@ -4,11 +4,37 @@ var userRepo = require('../repositories/user')
 
 /* GET users listing. */
 router.get('/getUsers', async function (req, res, next) {
-  let users = await userRepo.getAllUsers()
+  let page = parseInt(req.query.page)
+  let usersCount = await userRepo.countUsers()
+  let limit = parseInt(req.query.limit)
+  if (limit <= 0 || isNaN(limit))
+    req.query.limit = limit = 5
+  const pagesNum = Math.ceil(usersCount / limit)
+  if (page <= 0 || isNaN(page) || page > pagesNum)
+    req.query.page = page = 1
+  const offset = (page - 1) * limit
+  let users = await userRepo.getAllUsers(offset, limit)
   let data = {
-    usersArray: users
+    usersArray: users,
+    limit: limit
   }
   res.render('component/usersTable.html', data)
+});
+
+router.get('/getUsersPagination', async function (req, res, next) {
+  let page = parseInt(req.query.page)
+  if (page <= 0 || isNaN(page))
+    req.query.page = page = 1
+  let limit = parseInt(req.query.limit)
+  if (limit <= 0 || isNaN(limit))
+    req.query.limit = limit = 5
+  let usersCount = await userRepo.countUsers()
+  let data = {
+    page: page,
+    limit: limit,
+    pagesNum: Math.ceil(usersCount / limit)
+  }
+  res.render('component/pagination.html', data)
 });
 
 router.post('/getByID', async function (req, res, next) {
@@ -39,8 +65,9 @@ router.post('/add', async function (req, res, next) {
   User.email = req.body.email
   User.password = req.body.password
   let response = await userRepo.addUser(User)
+  let usersCount = await userRepo.countUsers()
   if (response[1]) {
-    res.send(['User has been added successfully', 'fas fa-check-circle', 'm-2 bg-success'])
+    res.send(['User has been added successfully', 'fas fa-check-circle', 'm-2 bg-success', , usersCount])
   } else {
     res.send(['An error has occured', 'fas fa-exclamation-triangle', 'm-2 bg-warning', 'The email or username have already been used!'])
   }
@@ -60,8 +87,9 @@ router.put('/update', async function (req, res, next) {
 
 router.delete('/delete', async function (req, res, next) {
   let userIsDeleted = await userRepo.deleteUser(req.body.id)
+  let usersCount = await userRepo.countUsers()
   if (userIsDeleted)
-    res.send(['Removed user successfully', 'fas fa-check-circle', 'm-2 bg-danger'])
+    res.send(['Removed user successfully', 'fas fa-check-circle', 'm-2 bg-danger', , usersCount])
   else
     res.send(['An error has occured', 'fas fa-exclamation-triangle', 'm-2 bg-warning'])
 });

@@ -4,6 +4,7 @@ var userRepo = require('../repositories/user')
 var tagRepo = require('../repositories/tags')
 var projectRepo = require('../repositories/projects')
 var articleRepo = require('../repositories/articles')
+const { URLSearchParams } = require('url')
 
 /* GET home page. */
 router.get('/', async function (req, res, next) {
@@ -23,11 +24,25 @@ router.get('/', async function (req, res, next) {
   res.render('index.html', data)
 })
 router.get('/users', async function (req, res, next) {
-  let users = await userRepo.getAllUsers()
+
+  let usersCount = await userRepo.countUsers()
+  let limit = parseInt(req.query.limit)
+  if (limit <= 0 || isNaN(limit))
+    req.query.limit = limit = 5
+  const pagesNum = Math.ceil(usersCount / limit)
+  let page = parseInt(req.query.page)
+  if (page <= 0 || isNaN(page) || page > pagesNum)
+    req.query.page = page = 1
+  const offset = (page - 1) * limit
+  let users = await userRepo.getAllUsers(offset, limit)
   let data = {
     activePage: 'users',
     title: 'Users',
-    usersArray: users
+    usersArray: users,
+    page: page,
+    limit: limit,
+    usersCount: usersCount,
+    pagesNum: pagesNum
   }
   res.render('pages/users.html', data)
 })

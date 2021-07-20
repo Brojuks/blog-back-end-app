@@ -1,0 +1,59 @@
+{% if page > pagesNum %}
+{% set page = 1 %}
+{% endif %}
+{% if page !== 1 and pagesNum !== 0 %}
+<li class="page-item">
+    <a class="page-link text-info" href="?page=1&limit={{ limit }}" aria-label="First">
+        <span aria-hidden="true">&lang;&lang;</span>
+    </a>
+</li>
+<li class="page-item">
+    <a class="page-link text-info" href="?page={{ page-1 }}&limit={{ limit }}" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+    </a>
+</li>
+{% endif %}
+{% if page <=4 %} {% for i in range(1, page) -%} <li class="page-item">
+    <a class="page-link text-info" href="?page={{ i }}&limit={{ limit }}">{{ i }}</a>
+    </li>
+    {%- endfor %}
+    {% endif %}
+    {% if page > 4 %}
+    <li class="page-item disabled">
+        <a class="page-link text-info" href="?page={{ page }}&limit={{ limit }}">...</a>
+    </li>
+    {% for i in range(page-3, page) -%}
+    <li class="page-item">
+        <a class="page-link text-info" href="?page={{ i }}&limit={{ limit }}">{{ i }}</a>
+    </li>
+    {%- endfor %}
+    {% endif %}
+    {% if pagesNum !== 0%}
+    <li class="page-item active">
+        <a class="page-link text-info" href="?page={{ page }}&limit={{ limit }}">{{ page }}</a>
+    </li>
+    {% endif %}
+    {% if page < pagesNum-3 %} {% for i in range(page+1, page+4) -%} <li class="page-item">
+        <a class="page-link text-info" href="?page={{ i }}&limit={{ limit }}">{{ i }}</a>
+        </li>
+        {%- endfor %}
+        <li class="page-item disabled">
+            <a class="page-link text-info" href="?page={{ page }}&limit={{ limit }}">...</a>
+        </li>
+        {% endif %}
+        {% if page >=pagesNum-3 and page <= pagesNum %} {% for i in range(page+1, pagesNum+1) -%} <li class="page-item">
+            <a class="page-link text-info" href="?page={{ i }}&limit={{ limit }}">{{ i }}</a>
+            </li>
+            {%- endfor %}
+            {% endif %}
+            {% if page !== pagesNum and page <= pagesNum %} <li class="page-item">
+                <a class="page-link text-info" href="?page={{ page+1 }}&limit={{ limit }}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link text-info" href="?page={{ pagesNum }}&limit={{ limit }}" aria-label="Last   ">
+                        <span aria-hidden="true">&rang;&rang;</span>
+                    </a>
+                </li>
+                {% endif %}

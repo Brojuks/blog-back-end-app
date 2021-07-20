@@ -9,7 +9,7 @@
     <td>{{ user.updatedAt }}</td>
     <td style="position: relative;">
         <form id="user{{user.id}}Form">
-            <button class="btn bg-danger DeleteBtn" title="Delete" type="button">
+            <button class="btn bg-danger DeleteBtn" data-userId="{{user.id}}" title="Delete" type="button">
                 <i class="fas fa-trash-alt"></i>
             </button>
             <button style="max-width: 40px !important;padding: auto !important; margin-left: 5px;"
@@ -23,10 +23,4 @@
 </tr>
 {% endfor %}
 
-{% endblock %}
-
-{% block js %}
-<script>
-
-</script>
 {% endblock %}

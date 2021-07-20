@@ -5,12 +5,24 @@
 <div class="row">
     <div class="col-12">
         <div class="card">
-            <div class="card-header">
-                <h3 class="card-title">All Users Table</h3>
+            <div class="card-header row align-items-center">
+                <h3 class="card-title col">All Users Table<span id="usersCountBadge"
+                        class="badge badge-light ml-1">{{usersCount}}</span>
+                </h3>
+                <div class="card-tools col row justify-content-end align-items-center">
+                    <p style="margin:0;">Number of rows :</p>
+                    <button class="btn btn-info mr-3 dropdown-toggle ml-1 text-center" type="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{limit}}</button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="?limit=5">5</a>
+                        <a class="dropdown-item" href="?limit=10">10</a>
+                        <a class="dropdown-item" href="?limit=20">20</a>
+                        <a class="dropdown-item" href="?limit=50">50</a>
+                        <a class="dropdown-item" href="?limit=100">100</a>
+                    </div>
 
-                <div class="card-tools row justify-content-between align-items-center">
-                    <button type="button" class="btn btn-info mr-3" data-toggle="modal" data-target="#addUserModal"><i
-                            class="fa fa-plus"></i>
+                    <button type="button" class="btn btn-info mr-3" data-toggle="modal" data-target="#addUserModal">
+                        <i class="fa fa-plus"></i>
                         Add</button>
                     <div class="input-group input-group-sm align-items-center" style="width: 150px;">
                         <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
@@ -37,7 +49,9 @@
                         </tr>
                     </thead>
                     <tbody id="usersTable">
+
                         {% include "component/usersTable.html" %}
+
                     </tbody>
                 </table>
             </div>
@@ -45,6 +59,14 @@
         </div>
         <!-- /.card -->
     </div>
+
+    <!-- Pagination -->
+    <nav style="width: 100%;" aria-label="Page navigation example">
+        <ul id="pagination-tables" class="pagination justify-content-center">
+            {% include "component/pagination.html" %}
+        </ul>
+    </nav>
+    <!-- /.Pagination -->
 </div>
 
 <!-- Add User Modal -->
@@ -64,7 +86,9 @@
 
                     <div class="input-group has-validation mb-3">
                         <div class="input-group-prepend">
-                            <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                            <span class="input-group-text">
+                                <i class="fas fa-envelope"></i>
+                            </span>
                         </div>
                         <input type="email" class="form-control" onkeyup="checkEmail()" id="addUserEmail" name="email"
                             placeholder="Email" required>
@@ -78,7 +102,9 @@
 
                     <div class="input-group has-validation mb-3">
                         <div class="input-group-prepend">
-                            <span class="input-group-text"><i class="fas fa-user"></i></span>
+                            <span class="input-group-text">
+                                <i class="fas fa-user"></i>
+                            </span>
                         </div>
                         <input type="text" class="form-control" onkeyup="checkUsername()" name="username"
                             id="addUserUsername" placeholder="Username" required>
@@ -92,9 +118,9 @@
 
                     <div class="input-group has-validation mb-3">
                         <div class="input-group-prepend">
-                            <button class="input-group-text" type="button" id="password-addon"
-                                onclick="showpassword()"><i id="password-addon-image"
-                                    class="fas fa-eye-slash"></i></button>
+                            <button class="input-group-text" type="button" id="password-addon" onclick="showpassword()">
+                                <i id="password-addon-image" class="fas fa-eye-slash"></i>
+                            </button>
                         </div>
                         <input type="password" onkeyup="onChange()" class="form-control" id="addUserPassword"
                             placeholder="Password" autocomplete="off" required>
@@ -109,8 +135,9 @@
                     <div class="input-group has-validation mb-3">
                         <div class="input-group-prepend">
                             <button class="input-group-text" type="button" id="confirmPassword-addon"
-                                onclick="showConfirmPassword()"><i id="confirmPassword-image"
-                                    class="fas fa-eye-slash"></i></button>
+                                onclick="showConfirmPassword()">
+                                <i id="confirmPassword-image" class="fas fa-eye-slash"></i>
+                            </button>
                         </div>
                         <input type="password" onkeyup="onChange()" name="password" class="form-control"
                             id="addUserConfirmPass" placeholder="Confirm Password" autocomplete="off" required>
@@ -129,15 +156,42 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button id="addUserBtn" type="submit" form="addUser-form" class="btn btn-primary"><i
-                        class="fa fa-plus"></i>
+                <button id="addUserBtn" type="submit" form="addUser-form" class="btn btn-primary">
+                    <i class="fa fa-plus"></i>
                     Add</button>
             </div>
         </div>
     </div>
 </div>
-<!-- ./ Add User Modal -->
+<!-- /.Add User Modal -->
 
+<!-- Delete User Modal -->
+
+<div class="modal fade" id="deleteUserModal" tabindex="-1" role="dialog" aria-labelledby="deleteUserModalTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteUserModalTitle">Are you sure you want to delete this User?</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <input type="hidden" name="id" id="deleteUserId" value="" />
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button id="modifyUserBtn" type="button" class="btn btn-primary">
+                    <i class="fa fa-trash"></i>
+                    Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /.Delete User Modal -->
 
 <!-- Edit User Modal -->
 
@@ -157,7 +211,9 @@
 
                     <div class="input-group has-validation mb-3">
                         <div class="input-group-prepend">
-                            <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                            <span class="input-group-text">
+                                <i class="fas fa-envelope"></i>
+                            </span>
                         </div>
                         <input type="email" class="form-control" onkeyup="checkEditEmail()" id="editUserEmail"
                             name="email" placeholder="Email" required>
@@ -173,7 +229,9 @@
 
                     <div class="input-group has-validation mb-3">
                         <div class="input-group-prepend">
-                            <span class="input-group-text"><i class="fas fa-user"></i></span>
+                            <span class="input-group-text">
+                                <i class="fas fa-user"></i>
+                            </span>
                         </div>
                         <input type="text" class="form-control" onkeyup="checkEditUsername()" name="username"
                             id="editUserUsername" placeholder="Username" required>
@@ -191,15 +249,14 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button id="modifyUserBtn" type="submit" form="editUser-form" class="btn btn-primary"><i
-                        class="fa fa-user-edit"></i>
+                <button id="modifyUserBtn" type="submit" form="editUser-form" class="btn btn-primary">
+                    <i class="fa fa-user-edit"></i>
                     Edit</button>
             </div>
         </div>
     </div>
 </div>
-<!-- ./ Edit User Modal -->
-
+<!-- /.Edit User Modal -->
 {% endblock %}
 
 {% block javascript %}
@@ -214,17 +271,26 @@
         });
     }
     initTooltip()
-
+    const urlParams = new URLSearchParams(window.location.search);
     initEvents()
     function updateTable(url, tableId) {
         $.ajax({
             type: 'GET',
-            url: url,
+            url: url + '?page=' + urlParams.get('page') + '&limit=' + urlParams.get('limit'),
             success: function (data) {
+                console.log('HEREE !! ' + urlParams.get('limit'))
                 console.log('table update was successful.');
                 document.getElementById(tableId).innerHTML = data
                 initEvents()
                 initTooltip()
+                $.ajax({
+                    type: 'GET',
+                    url: 'users/getUsersPagination?page=' + urlParams.get('page') + '&limit=' + urlParams.get('limit'),
+                    success: function (data) {
+                        document.getElementById('pagination-tables').innerHTML = data
+                        console.log('pagination updated : ' + this.url)
+                    }
+                })
             }
         })
     }
@@ -232,6 +298,7 @@
         var frm = $('#editUser-form')
         if (!document.getElementById('editUser-form').checkValidity())
             return;
+
         $.ajax({
             type: 'POST',
             url: 'users/checkUserDuplicate',
@@ -277,6 +344,7 @@
         var frm = $('#addUser-form')
         if (!document.getElementById('addUser-form').checkValidity())
             return;
+
         $.ajax({
             type: 'POST',
             url: 'users/add',
@@ -284,6 +352,7 @@
             success: function (data) {
                 console.log('Submission was successful.');
                 console.log(data);
+                document.getElementById('usersCountBadge').innerHTML = data[4]
                 $(document).Toasts('create', {
                     title: data[0],
                     autohide: true,
@@ -294,6 +363,7 @@
                 })
                 if (data[0] !== 'An error has occured')
                     $('#addUserModal').modal('toggle')
+
                 updateTable('users/getUsers', 'usersTable')
             }
         });
@@ -309,6 +379,7 @@
                 success: function (data) {
                     console.log('Submission was successful.');
                     console.log(data);
+                    document.getElementById('usersCountBadge').innerHTML = data[4]
                     $(document).Toasts('create', {
                         title: data[0],
                         autohide: true,
@@ -324,21 +395,33 @@
         });
 
         $(".ModifyBtn").click(function () {
-            var frm = $(this).parent()
-            console.log(frm)
-            $.ajax({
-                type: 'POST',
-                url: 'users/getByID',
-                data: frm.serialize(),
-                success: function (data) {
-                    console.log('Submission was successful.');
-                    console.log(data);
-                    $('#editUserModal').modal('show')
-                    document.getElementById('editUserEmail').value = data.email
-                    document.getElementById('editUserUsername').value = data.username
-                    document.getElementById('editUserId').value = data.id
-                }
-            });
+            var frm = $(this)
+                .parent()
+            console
+                .log(frm)
+            $
+                .ajax({
+                    type: 'POST',
+                    url: 'users/getByID',
+                    data: frm.serialize(),
+                    success: function (data) {
+                        console.log('Submission was successful.');
+                        console.log(data);
+                        $('#editUserModal')
+                            .modal('show')
+                        document
+                            .getElementById('editUserEmail')
+                            .value = data
+                                .email
+                        document
+                            .getElementById('editUserUsername')
+                            .value = data
+                                .username
+                        document
+                            .getElementById('editUserId')
+                            .value = data.id
+                    }
+                });
             return false;
         });
     }
@@ -370,7 +453,7 @@
     }
     function checkEditEmail() {
         const email = document.querySelector('#editUserEmail');
-        var emailtest = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+        var emailtest = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2, 3})+$/;
         if (emailtest.test(email.value)) {
             email.setCustomValidity('');
         } else {
@@ -388,21 +471,33 @@
     function showpassword() {
         if (document.getElementById('addUserPassword').type === 'password') {
             document.getElementById('addUserPassword').type = 'text'
-            document.getElementById('password-addon-image').classList.replace("fa-eye-slash", "fa-eye")
+            document
+                .getElementById('password-addon-image')
+                .classList
+                .replace("fa-eye-slash", "fa-eye")
             hidden = 0
         } else {
             document.getElementById('addUserPassword').type = 'password'
-            document.getElementById('password-addon-image').classList.replace("fa-eye", "fa-eye-slash")
+            document
+                .getElementById('password-addon-image')
+                .classList
+                .replace("fa-eye", "fa-eye-slash")
         }
     }
     function showConfirmPassword() {
         if (document.getElementById('addUserConfirmPass').type === 'password') {
             document.getElementById('addUserConfirmPass').type = 'text'
-            document.getElementById('confirmPassword-image').classList.replace("fa-eye-slash", "fa-eye")
+            document
+                .getElementById('confirmPassword-image')
+                .classList
+                .replace("fa-eye-slash", "fa-eye")
             hidden = 0
         } else {
             document.getElementById('addUserConfirmPass').type = 'password'
-            document.getElementById('confirmPassword-image').classList.replace("fa-eye", "fa-eye-slash")
+            document
+                .getElementById('confirmPassword-image')
+                .classList
+                .replace("fa-eye", "fa-eye-slash")
         }
     }
 </script>
