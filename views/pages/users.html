@@ -179,12 +179,15 @@
             </div>
 
             <div class="modal-body">
-                <input type="hidden" name="id" id="deleteUserId" value="" />
+                <h1 id="deleteUser-formTitle"></h1>
+                <form id="deleteUser-form">
+                    <input type="hidden" name="id" id="deleteUserId" value="" />
+                </form>
             </div>
 
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button id="modifyUserBtn" type="button" class="btn btn-primary">
+                <button id="deleteUserIdBtn" type="button" class="btn btn-danger">
                     <i class="fa fa-trash"></i>
                     Delete</button>
             </div>
@@ -371,7 +374,15 @@
     });
     function initEvents() {
         $(".DeleteBtn").click(function () {
-            var frm = $(this).parent()
+            var userId = $(this).attr('data-userId')
+            $("#deleteUserModal #deleteUserId").val(userId);
+            $("#deleteUser-formTitle").html("ID : " + userId);
+            $('#deleteUserModal').modal('show');
+            return false;
+        });
+
+        $("#deleteUserIdBtn").click(function () {
+            var frm = $("#deleteUser-form")
             $.ajax({
                 type: 'DELETE',
                 url: 'users/delete',
@@ -379,6 +390,7 @@
                 success: function (data) {
                     console.log('Submission was successful.');
                     console.log(data);
+                    $('#deleteUserModal').modal('toggle');
                     document.getElementById('usersCountBadge').innerHTML = data[4]
                     $(document).Toasts('create', {
                         title: data[0],
@@ -391,7 +403,6 @@
                     updateTable('users/getUsers', 'usersTable')
                 }
             });
-            return false;
         });
 
         $(".ModifyBtn").click(function () {
