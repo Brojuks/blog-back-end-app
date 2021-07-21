@@ -281,7 +281,6 @@
             type: 'GET',
             url: url + '?page=' + urlParams.get('page') + '&limit=' + urlParams.get('limit'),
             success: function (data) {
-                console.log('HEREE !! ' + urlParams.get('limit'))
                 console.log('table update was successful.');
                 document.getElementById(tableId).innerHTML = data
                 initEvents()
@@ -291,7 +290,7 @@
                     url: 'users/getUsersPagination?page=' + urlParams.get('page') + '&limit=' + urlParams.get('limit'),
                     success: function (data) {
                         document.getElementById('pagination-tables').innerHTML = data
-                        console.log('pagination updated : ' + this.url)
+                        console.log('pagination updated.')
                     }
                 })
             }
@@ -307,7 +306,6 @@
             url: 'users/checkUserDuplicate',
             data: frm.serialize(),
             success: function (data) {
-                console.log(data);
                 if (data !== '') {
                     $(document).Toasts('create', {
                         title: data[0],
@@ -323,8 +321,7 @@
                         url: 'users/update',
                         data: frm.serialize(),
                         success: function (data) {
-                            console.log('Submission was successful.');
-                            console.log(data);
+                            console.log('User update was successful.');
                             $(document).Toasts('create', {
                                 title: data[0],
                                 autohide: true,
@@ -353,8 +350,7 @@
             url: 'users/add',
             data: frm.serialize(),
             success: function (data) {
-                console.log('Submission was successful.');
-                console.log(data);
+                console.log('User add was successful.');
                 document.getElementById('usersCountBadge').innerHTML = data[4]
                 $(document).Toasts('create', {
                     title: data[0],
@@ -381,16 +377,14 @@
             return false;
         });
 
-        $("#deleteUserIdBtn").click(function () {
+        $("#deleteUserIdBtn").unbind().click(function () {
             var frm = $("#deleteUser-form")
             $.ajax({
                 type: 'DELETE',
                 url: 'users/delete',
                 data: frm.serialize(),
                 success: function (data) {
-                    console.log('Submission was successful.');
-                    console.log(data);
-                    $('#deleteUserModal').modal('toggle');
+                    console.log('User delete was successful.');
                     document.getElementById('usersCountBadge').innerHTML = data[4]
                     $(document).Toasts('create', {
                         title: data[0],
@@ -400,39 +394,27 @@
                         class: data[2],
                         body: data[3]
                     })
+                    if (data[0] !== 'An error has occured')
+                        $('#deleteUserModal').modal('toggle')
                     updateTable('users/getUsers', 'usersTable')
                 }
             });
         });
 
         $(".ModifyBtn").click(function () {
-            var frm = $(this)
-                .parent()
-            console
-                .log(frm)
-            $
-                .ajax({
-                    type: 'POST',
-                    url: 'users/getByID',
-                    data: frm.serialize(),
-                    success: function (data) {
-                        console.log('Submission was successful.');
-                        console.log(data);
-                        $('#editUserModal')
-                            .modal('show')
-                        document
-                            .getElementById('editUserEmail')
-                            .value = data
-                                .email
-                        document
-                            .getElementById('editUserUsername')
-                            .value = data
-                                .username
-                        document
-                            .getElementById('editUserId')
-                            .value = data.id
-                    }
-                });
+            var frm = $(this).parent()
+            $.ajax({
+                type: 'POST',
+                url: 'users/getByID',
+                data: frm.serialize(),
+                success: function (data) {
+                    console.log('User data sent to modify modal successfully.');
+                    $('#editUserModal').modal('show')
+                    document.getElementById('editUserEmail').value = data.email
+                    document.getElementById('editUserUsername').value = data.username
+                    document.getElementById('editUserId').value = data.id
+                }
+            });
             return false;
         });
     }
@@ -463,12 +445,12 @@
         }
     }
     function checkEditEmail() {
-        const email = document.querySelector('#editUserEmail');
-        var emailtest = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2, 3})+$/;
-        if (emailtest.test(email.value)) {
-            email.setCustomValidity('');
+        const editEmail = document.querySelector('#editUserEmail');
+        var editEmailTest = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+        if (editEmailTest.test(editEmail.value)) {
+            editEmail.setCustomValidity('');
         } else {
-            email.setCustomValidity('This email is not valid!');
+            editEmail.setCustomValidity('This email is not valid!');
         }
     }
     function checkEditUsername() {

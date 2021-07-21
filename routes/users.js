@@ -69,7 +69,7 @@ router.post('/add', async function (req, res, next) {
   if (response[1]) {
     res.send(['User has been added successfully', 'fas fa-check-circle', 'm-2 bg-success', , usersCount])
   } else {
-    res.send(['An error has occured', 'fas fa-exclamation-triangle', 'm-2 bg-warning', 'The email or username have already been used!'])
+    res.send(['An error has occured', 'fas fa-exclamation-triangle', 'm-2 bg-warning', 'The email or username have already been used!', usersCount])
   }
 });
 
@@ -91,7 +91,7 @@ router.delete('/delete', async function (req, res, next) {
   if (userIsDeleted)
     res.send(['Removed user successfully', 'fas fa-check-circle', 'm-2 bg-danger', , usersCount])
   else
-    res.send(['An error has occured', 'fas fa-exclamation-triangle', 'm-2 bg-warning'])
+    res.send(['An error has occured', 'fas fa-exclamation-triangle', 'm-2 bg-warning', , usersCount])
 });
 
 router.get('/search/:searchtext', async function (req, res, next) {
