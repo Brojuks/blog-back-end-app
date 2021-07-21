@@ -8,7 +8,7 @@ const users = [...Array(50)].map((user) => (
     username: faker.internet.userName(),
     password: faker.internet.password(8),
     createdAt: faker.date.between('2000-01-01', '2021-12-31'),
-    updatedAt: this.createdAt
+    updatedAt: new Date()
   }
 ))
 
@@ -39,7 +39,7 @@ module.exports = {
           published: faker.datatype.number({ min: 0, max: 1 }),
           UserId: faker.random.arrayElement(JSON.parse(JSON.stringify(usersIds))).id,
           createdAt: new Date(),
-          updatedAt: this.createdAt
+          updatedAt: new Date()
         }
       ))
       , {});
@@ -74,7 +74,7 @@ module.exports = {
           tag: faker.lorem.sentence(3, 3),
           UserId: faker.random.arrayElement(JSON.parse(JSON.stringify(usersIds))).id,
           createdAt: new Date(),
-          updatedAt: this.createdAt
+          updatedAt: new Date()
         }
       ))
       , {});
@@ -89,23 +89,27 @@ module.exports = {
     var tag_last = JSON.parse(JSON.stringify(tagsIds)).length - 1
     var prjct_last = JSON.parse(JSON.stringify(projectsIds)).length - 1
 
-    console.log('Adding ArticlesTags... (This will take a while)');
+    console.log('Adding ArticlesTags... (This may take a while)');
     for (let i = 0; i <= art_last; i++) {
       for (let j = 0; j <= faker.datatype.number({ min: 0, max: tag_last }); j++) {
         await queryInterface.bulkInsert('articlestags', [{
           ArticleId: JSON.parse(JSON.stringify(articlesIds))[i].id,
-          TagId: JSON.parse(JSON.stringify(tagsIds))[j].id
+          TagId: JSON.parse(JSON.stringify(tagsIds))[j].id,
+          createdAt: new Date(),
+          updatedAt: new Date()
         }], {})
       }
     };
     console.log('ArticlesTags DONE');
 
-    console.log('Adding ProjectsTags... (This will take a while)');
+    console.log('Adding ProjectsTags... (This may take a while)');
     for (let i = 0; i <= prjct_last; i++) {
       for (let j = 0; j <= faker.datatype.number({ min: 0, max: tag_last }); j++) {
         await queryInterface.bulkInsert('projectstags', [{
           ProjectId: JSON.parse(JSON.stringify(projectsIds))[i].id,
-          TagId: JSON.parse(JSON.stringify(tagsIds))[j].id
+          TagId: JSON.parse(JSON.stringify(tagsIds))[j].id,
+          createdAt: new Date(),
+          updatedAt: new Date()
         }], {})
       }
     };
