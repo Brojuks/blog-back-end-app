@@ -80,7 +80,7 @@ router.put('/update', async function (req, res, next) {
   User.id = req.body.id
   let userIsModified = await userRepo.updateUser(User)
   if (userIsModified)
-    res.send(['Modified user successfully', 'fas fa-check-circle', 'm-2 bg-success'])
+    res.send(['Modified user #' + User.id + ' successfully', 'fas fa-check-circle', 'm-2 bg-success'])
   else
     res.send(['An error has occured', 'fas fa-exclamation-triangle', 'm-2 bg-warning', 'The email or username have already been used!'])
 });
@@ -89,7 +89,7 @@ router.delete('/delete', async function (req, res, next) {
   let userIsDeleted = await userRepo.deleteUser(req.body.id)
   let usersCount = await userRepo.countUsers()
   if (userIsDeleted)
-    res.send(['Removed user successfully', 'fas fa-check-circle', 'm-2 bg-danger', , usersCount])
+    res.send(['Removed user #' + req.body.id + ' successfully', 'fas fa-check-circle', 'm-2 bg-danger', , usersCount])
   else
     res.send(['An error has occured', 'fas fa-exclamation-triangle', 'm-2 bg-warning', , usersCount])
 });

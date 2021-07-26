@@ -53,9 +53,8 @@ router.post('/add', async function (req, res, next) {
     Article.content = req.body.content
     Article.published = req.body.published
     Article.UserId = req.body.UserId
-    let response = await articleRepo.addArticle(Article)
+    await articleRepo.addArticle(Article)
     let articlesCount = await articleRepo.countArticles()
-    console.log(response)
     res.send(['Article has been added successfully', 'fas fa-check-circle', 'm-2 bg-success', , articlesCount])
 });
 
@@ -68,7 +67,7 @@ router.put('/update', async function (req, res, next) {
     Article.published = req.body.published
     let articleIsModified = await articleRepo.updateArticle(Article)
     if (articleIsModified)
-        res.send(['Modified article successfully', 'fas fa-check-circle', 'm-2 bg-success'])
+        res.send(['Modified article #' + Article.id + ' successfully', 'fas fa-check-circle', 'm-2 bg-success'])
     else
         res.send(['An error has occured', 'fas fa-exclamation-triangle', 'm-2 bg-warning'])
 });
@@ -77,7 +76,7 @@ router.delete('/delete', async function (req, res, next) {
     let articleIsDeleted = await articleRepo.deleteArticle(req.body.id)
     let articlesCount = await articleRepo.countArticles()
     if (articleIsDeleted)
-        res.send(['Removed article successfully', 'fas fa-check-circle', 'm-2 bg-danger', , articlesCount])
+        res.send(['Removed article #' + req.body.id + ' successfully', 'fas fa-check-circle', 'm-2 bg-danger', , articlesCount])
     else
         res.send(['An error has occured', 'fas fa-exclamation-triangle', 'm-2 bg-warning', , articlesCount])
 });

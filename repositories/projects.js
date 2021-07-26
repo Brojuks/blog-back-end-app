@@ -1,4 +1,5 @@
 const { Projects } = require('../models')
+const { Users } = require('../models')
 const { Op } = require("sequelize");
 
 module.exports = {
@@ -11,7 +12,19 @@ module.exports = {
         return await Projects.findAll({
             offset: offset,
             limit: limit,
+            include: {
+                model: Users,
+                attributes: ['username']
+            }
         })
+    },
+
+    async getProjectById(id) {
+        return await Projects.findOne({
+            where: {
+                id: id
+            }
+        });
     },
 
     async searchForProject(searchText) {
@@ -44,7 +57,7 @@ module.exports = {
         },
             {
                 where: {
-                    id: articleData.id
+                    id: projectData.id
                 },
             }
         )

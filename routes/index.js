@@ -59,7 +59,6 @@ router.get('/articles', async function (req, res, next) {
     req.query.page = page = 1
   const offset = (page - 1) * limit
   let articles = await articleRepo.getAllArticles(offset, limit)
-  console.log(articles)
   let data = {
     activePage: 'articles',
     title: 'Articles',
@@ -70,5 +69,29 @@ router.get('/articles', async function (req, res, next) {
     pagesNum: pagesNum
   }
   res.render('pages/articles.html', data)
+})
+
+router.get('/projects', async function (req, res, next) {
+
+  let projectsCount = await projectRepo.countProjects()
+  let limit = parseInt(req.query.limit)
+  if (limit <= 0 || isNaN(limit))
+    req.query.limit = limit = 5
+  const pagesNum = Math.ceil(projectsCount / limit)
+  let page = parseInt(req.query.page)
+  if (page <= 0 || isNaN(page) || page > pagesNum)
+    req.query.page = page = 1
+  const offset = (page - 1) * limit
+  let projects = await projectRepo.getAllProjects(offset, limit)
+  let data = {
+    activePage: 'projects',
+    title: 'Projects',
+    projectsArray: projects,
+    page: page,
+    limit: limit,
+    projectsCount: projectsCount,
+    pagesNum: pagesNum
+  }
+  res.render('pages/projects.html', data)
 })
 module.exports = router;

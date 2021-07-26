@@ -10,8 +10,8 @@
     <div class="col-12">
         <div class="card">
             <div class="card-header row align-items-center">
-                <h3 class="card-title col">All Articles Table<span id="articlesCountBadge"
-                        class="badge badge-light ml-1">{{articlesCount}}</span>
+                <h3 class="card-title col">All Projects Table<span id="projectsCountBadge"
+                        class="badge badge-light ml-1">{{projectsCount}}</span>
                 </h3>
                 <div class="card-tools col row justify-content-end align-items-center">
                     <p style="margin:0;">Number of rows :</p>
@@ -25,7 +25,7 @@
                         <a class="dropdown-item" href="?limit=100">100</a>
                     </div>
 
-                    <button type="button" class="btn btn-info mr-3" data-toggle="modal" data-target="#addArtModal">
+                    <button type="button" class="btn btn-info mr-3" data-toggle="modal" data-target="#addProjectModal">
                         <i class="fa fa-plus"></i>
                         Add</button>
                     <div class="input-group input-group-sm align-items-center" style="width: 150px;">
@@ -55,9 +55,9 @@
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody id="articlesTable">
+                    <tbody id="projectsTable">
 
-                        {% include "component/articlesTable.html" %}
+                        {% include "component/projectsTable.html" %}
 
                     </tbody>
                 </table>
@@ -76,24 +76,24 @@
     <!-- /.Pagination -->
 </div>
 
-<!-- Add Article Modal -->
-<div class="modal fade" id="addArtModal" tabindex="-1" role="dialog" aria-labelledby="addArtModalTitle"
+<!-- Add Project Modal -->
+<div class="modal fade" id="addProjectModal" tabindex="-1" role="dialog" aria-labelledby="addProjectModalTitle"
     aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="addArtModalTitle">Add Article</h5>
+                <h5 class="modal-title" id="addProjectModalTitle">Add Project</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
 
-                <form id="addArticle-form" class="container needs-validation" novalidate>
+                <form id="addProject-form" class="container needs-validation" novalidate>
 
                     <div class="form-group">
-                        <label for="addArtTitle">Title</label>
-                        <input type="text" class="form-control" onkeyup="checkTitle()" id="addArtTitle" name="title"
+                        <label for="addProjectTitle">Title</label>
+                        <input type="text" class="form-control" onkeyup="checkTitle()" id="addProjectTitle" name="title"
                             placeholder="Title" required>
                         <div class="valid-feedback">
                             Looks good!
@@ -104,22 +104,22 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="addArtImage">Image</label>
+                        <label for="addProjectImage">Image</label>
                         <div class="input-group">
                             <div class="custom-file">
                                 <input type="file" class="form-control custom-file-input" accept="image/*"
-                                    id="addArtImage" required>
+                                    id="addProjectImage" required>
                                 <input name="image" type="hidden" value="NewImageURL">
-                                <label class="custom-file-label" for="addArtImage">Choose an image</label>
+                                <label class="custom-file-label" for="addProjectImage">Choose an image</label>
                             </div>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="addArtContent">Content</label>
+                        <label for="addProjectContent">Content</label>
                         <div id="summernote">Content goes here !</div>
                         <input style="visibility: hidden;height: 0px;padding: 0;" type="text" class="form-control"
-                            name="content" id="addArtContent" required>
+                            name="content" id="addProjectContent" required>
                         <div class="valid-feedback">
                             Looks good!
                         </div>
@@ -131,11 +131,11 @@
                     <input id="uncheckedVal" type="hidden" name="" value="0">
 
                     <div class="form-group">
-                        <label for="addArtPublish">Publish?</label>
+                        <label for="addProjectPublish">Publish?</label>
                         <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
-                            <input type="checkbox" class="custom-control-input" name="published" id="addArtPublish"
+                            <input type="checkbox" class="custom-control-input" name="published" id="addProjectPublish"
                                 value="1" checked>
-                            <label class="custom-control-label" for="addArtPublish"><span
+                            <label class="custom-control-label" for="addProjectPublish"><span
                                     style="color: limegreen;">Green ='Yes'</span> <span
                                     style="color: rgb(255, 98, 98);">Red =
                                     'No'</span></label>
@@ -151,65 +151,65 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button id="addArtBtn" type="submit" form="addArticle-form" class="btn btn-primary">
+                <button id="addProjectBtn" type="submit" form="addProject-form" class="btn btn-primary">
                     <i class="fa fa-plus"></i>
                     Add</button>
             </div>
         </div>
     </div>
 </div>
-<!-- /.Add Article Modal -->
+<!-- /.Add Project Modal -->
 
-<!-- Delete Article Modal -->
+<!-- Delete Project Modal -->
 
-<div class="modal fade" id="deleteArtModal" tabindex="-1" role="dialog" aria-labelledby="deleteArtModalTitle"
+<div class="modal fade" id="deleteProjectModal" tabindex="-1" role="dialog" aria-labelledby="deleteProjectModalTitle"
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="deleteArtModalTitle">Are you sure you want to delete this Article?</h5>
+                <h5 class="modal-title" id="deleteProjectModalTitle">Are you sure you want to delete this Project?</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
 
             <div class="modal-body">
-                <h1 id="deleteArt-formTitle"></h1>
-                <form id="deleteArt-form">
-                    <input type="hidden" name="id" id="deleteArtId" value="" />
+                <h1 id="deleteProject-formTitle"></h1>
+                <form id="deleteProject-form">
+                    <input type="hidden" name="id" id="deleteProjectId" value="" />
                 </form>
             </div>
 
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button id="deleteArtIdBtn" type="button" class="btn btn-danger">
+                <button id="deleteProjectIdBtn" type="button" class="btn btn-danger">
                     <i class="fa fa-trash"></i>
                     Delete</button>
             </div>
         </div>
     </div>
 </div>
-<!-- /.Delete Article Modal -->
+<!-- /.Delete Project Modal -->
 
-<!-- Edit Article Modal -->
+<!-- Edit Project Modal -->
 
-<div class="modal fade" id="editArtModal" tabindex="-1" role="dialog" aria-labelledby="editArtModalTitle"
+<div class="modal fade" id="editProjectModal" tabindex="-1" role="dialog" aria-labelledby="editProjectModalTitle"
     aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="editArtModalTitle">Modify Article</h5>
+                <h5 class="modal-title" id="editProjectModalTitle">Modify Project</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
 
-                <form id="editArt-form" class="container needs-validation" novalidate>
+                <form id="editProject-form" class="container needs-validation" novalidate>
 
                     <div class="form-group">
-                        <label for="editArtTitle">Title</label>
-                        <input type="text" class="form-control" onkeyup="checkEditTitle()" id="editArtTitle"
+                        <label for="editProjectTitle">Title</label>
+                        <input type="text" class="form-control" onkeyup="checkEditTitle()" id="editProjectTitle"
                             name="title" placeholder="Title" required>
                         <div class="valid-feedback">
                             Looks good!
@@ -220,22 +220,22 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="editArtImage">Image</label>
+                        <label for="editProjectImage">Image</label>
                         <div class="input-group">
                             <div class="custom-file">
                                 <input type="hidden" id="teporariyIMG" name="image">
                                 <input type="file" class="form-control custom-file-input" accept="image/*"
-                                    id="editArtImage">
-                                <label class="custom-file-label" for="editArtImage">Choose an image</label>
+                                    id="editProjectImage">
+                                <label class="custom-file-label" for="editProjectImage">Choose an image</label>
                             </div>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="editArtContent">Content</label>
+                        <label for="editProjectContent">Content</label>
                         <div id="summernoteEdit"></div>
                         <input style="visibility: hidden;height: 0px;padding: 0;" type="text" class="form-control"
-                            name="content" id="editArtContent" required>
+                            name="content" id="editProjectContent" required>
                         <div class="valid-feedback">
                             Looks good!
                         </div>
@@ -247,17 +247,18 @@
                     <input id="uncheckedEditVal" type="hidden" name="" value="0">
 
                     <div class="form-group">
-                        <label for="editArtPublish">Publish?</label>
+                        <label for="editProjectPublish">Publish?</label>
                         <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
-                            <input type="checkbox" class="custom-control-input" name="published" id="editArtPublish">
-                            <label class="custom-control-label" for="editArtPublish"><span
+                            <input type="checkbox" class="custom-control-input" name="published"
+                                id="editProjectPublish">
+                            <label class="custom-control-label" for="editProjectPublish"><span
                                     style="color: limegreen;">Green ='Yes'</span> <span
                                     style="color: rgb(255, 98, 98);">Red =
                                     'No'</span></label>
                         </div>
                     </div>
 
-                    <input type="hidden" id="editArtId" name="id" placeholder="ID">
+                    <input type="hidden" id="editProjectId" name="id" placeholder="ID">
 
                 </form>
 
@@ -265,14 +266,14 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button id="modifyArtBtn" type="submit" form="editArt-form" class="btn btn-primary">
+                <button id="modifyProjectBtn" type="submit" form="editProject-form" class="btn btn-primary">
                     <i class="fa fa-pen"></i>
                     Edit</button>
             </div>
         </div>
     </div>
 </div>
-<!-- /.Edit Article Modal -->
+<!-- /.Edit Project Modal -->
 {% endblock %}
 
 {% block javascript %}
@@ -292,7 +293,7 @@
         bsCustomFileInput.init()
     })
 
-    $("#addArtPublish").change(function () {
+    $("#addProjectPublish").change(function () {
         if (this.checked) {
             $(this).val("1")
             $("#uncheckedVal").attr('name', '')
@@ -301,7 +302,7 @@
         }
     });
 
-    $("#editArtPublish").change(function () {
+    $("#editProjectPublish").change(function () {
         if (this.checked) {
             $(this).val("1")
             $("#uncheckedEditVal").attr('name', '')
@@ -318,7 +319,7 @@
         }
     }
 
-    $('#addArtModal').on('show.bs.modal', function () {
+    $('#addProjectModal').on('show.bs.modal', function () {
         $('#summernote').summernote({
             dialogsInBody: true,
             toolbar: [
@@ -357,22 +358,22 @@
 
     function initEvents() {
         $(".DeleteBtn").click(function () {
-            var articleId = $(this).attr('data-articleId')
-            $("#deleteArtModal #deleteArtId").val(articleId);
-            $("#deleteArt-formTitle").html("ID : " + articleId);
-            $('#deleteArtModal').modal('show');
+            var projectId = $(this).attr('data-projectId')
+            $("#deleteProjectModal #deleteProjectId").val(projectId);
+            $("#deleteProject-formTitle").html("ID : " + projectId);
+            $('#deleteProjectModal').modal('show');
             return false;
         });
 
-        $("#deleteArtIdBtn").unbind().click(function () {
-            var frm = $("#deleteArt-form")
+        $("#deleteProjectIdBtn").unbind().click(function () {
+            var frm = $("#deleteProject-form")
             $.ajax({
                 type: 'DELETE',
-                url: 'articles/delete',
+                url: 'projects/delete',
                 data: frm.serialize(),
                 success: function (data) {
-                    console.log('Article delete was successful.');
-                    document.getElementById('articlesCountBadge').innerHTML = data[4]
+                    console.log('Project delete was successful.');
+                    document.getElementById('projectsCountBadge').innerHTML = data[4]
                     $(document).Toasts('create', {
                         title: data[0],
                         autohide: true,
@@ -382,8 +383,8 @@
                         body: data[3]
                     })
                     if (data[0] !== 'An error has occured')
-                        $('#deleteArtModal').modal('toggle')
-                    updateTable('articles/getArticles', 'articlesTable')
+                        $('#deleteProjectModal').modal('toggle')
+                    updateTable('projects/getProjects', 'projectsTable')
                 }
             });
         });
@@ -392,14 +393,14 @@
             var frm = $(this).parent()
             $.ajax({
                 type: 'POST',
-                url: 'articles/getByID',
+                url: 'projects/getByID',
                 data: frm.serialize(),
                 success: function (data) {
-                    console.log('Article data sent to modify modal successfully.');
+                    console.log('Project data sent to modify modal successfully.');
                     $('#summernoteEdit').summernote('destroy');
-                    $('#editArtModal').modal('show')
-                    document.getElementById('editArtTitle').value = data.title
-                    document.getElementById('editArtContent').value = data.content
+                    $('#editProjectModal').modal('show')
+                    document.getElementById('editProjectTitle').value = data.title
+                    document.getElementById('editProjectContent').value = data.content
                     document.getElementById('teporariyIMG').value = data.image
                     $('#summernoteEdit').summernote({
                         dialogsInBody: true,
@@ -427,15 +428,15 @@
                             }
                         }
                     })
-                    document.getElementById('editArtPublish').value = data.published
+                    document.getElementById('editProjectPublish').value = data.published
                     if (data.published) {
-                        document.getElementById('editArtPublish').checked = true;
+                        document.getElementById('editProjectPublish').checked = true;
                         document.getElementById('uncheckedEditVal').setAttribute("name", "");
                     } else {
-                        document.getElementById('editArtPublish').checked = false;
+                        document.getElementById('editProjectPublish').checked = false;
                         document.getElementById('uncheckedEditVal').setAttribute("name", "published");
                     }
-                    document.getElementById('editArtId').value = data.id
+                    document.getElementById('editProjectId').value = data.id
                 }
             });
             return false;
@@ -456,7 +457,7 @@
                 initTooltip()
                 $.ajax({
                     type: 'GET',
-                    url: 'articles/getArticlesPagination?page=' + urlParams.get('page') + '&limit=' + urlParams.get('limit'),
+                    url: 'projects/getProjectsPagination?page=' + urlParams.get('page') + '&limit=' + urlParams.get('limit'),
                     success: function (data) {
                         document.getElementById('pagination-tables').innerHTML = data
                         console.log('pagination updated.')
@@ -465,16 +466,16 @@
             }
         })
     }
-    $("#modifyArtBtn").click(function () {
-        var frm = $('#editArt-form')
-        if (!document.getElementById('editArt-form').checkValidity())
+    $("#modifyProjectBtn").click(function () {
+        var frm = $('#editProject-form')
+        if (!document.getElementById('editProject-form').checkValidity())
             return;
         $.ajax({
             type: 'PUT',
-            url: 'articles/update',
+            url: 'projects/update',
             data: frm.serialize(),
             success: function (data) {
-                console.log('Article update was successful.');
+                console.log('Project update was successful.');
                 $(document).Toasts('create', {
                     title: data[0],
                     autohide: true,
@@ -483,25 +484,25 @@
                     class: data[2],
                     body: data[3]
                 })
-                $('#editArtModal').modal('toggle')
-                updateTable('articles/getArticles', 'articlesTable')
+                $('#editProjectModal').modal('toggle')
+                updateTable('projects/getProjects', 'projectsTable')
             }
         })
         return false;
     });
 
-    $("#addArtBtn").click(function () {
-        var frm = $('#addArticle-form')
-        if (!document.getElementById('addArticle-form').checkValidity())
+    $("#addProjectBtn").click(function () {
+        var frm = $('#addProject-form')
+        if (!document.getElementById('addProject-form').checkValidity())
             return;
 
         $.ajax({
             type: 'POST',
-            url: 'articles/add',
+            url: 'projects/add',
             data: frm.serialize(),
             success: function (data) {
-                console.log('Article add was successful.');
-                document.getElementById('articlesCountBadge').innerHTML = data[4]
+                console.log('Project add was successful.');
+                document.getElementById('projectsCountBadge').innerHTML = data[4]
                 $(document).Toasts('create', {
                     title: data[0],
                     autohide: true,
@@ -511,9 +512,9 @@
                     body: data[3]
                 })
                 if (data[0] !== 'An error has occured')
-                    $('#addArtModal').modal('toggle')
+                    $('#addProjectModal').modal('toggle')
 
-                updateTable('articles/getArticles', 'articlesTable')
+                updateTable('projects/getProjects', 'projectsTable')
             }
         });
         return false;
@@ -521,7 +522,7 @@
 
 
     function checkTitle() {
-        const Title = document.querySelector('#addArtTitle');
+        const Title = document.querySelector('#addProjectTitle');
         if (Title.value.length >= 2 && Title.value.length <= 80) {
             Title.setCustomValidity('');
         } else {
@@ -529,7 +530,7 @@
         }
     }
     function checkEditTitle() {
-        const editTitle = document.querySelector('#editArtTitle');
+        const editTitle = document.querySelector('#editProjectTitle');
         if (editTitle.value.length >= 2 && editTitle.value.length <= 80) {
             editTitle.setCustomValidity('');
         } else {
@@ -537,7 +538,7 @@
         }
     }
     function checkContent() {
-        const Content = document.querySelector('#addArtContent');
+        const Content = document.querySelector('#addProjectContent');
         Content.value = $("#summernote").summernote("code");
         if (Content.value.length >= 20) {
             Content.setCustomValidity('');
@@ -546,7 +547,7 @@
         }
     }
     function checkEditContent() {
-        const editContent = document.querySelector('#editArtContent');
+        const editContent = document.querySelector('#editProjectContent');
         editContent.value = $("#summernoteEdit").summernote("code");
         if (editContent.value.length >= 20) {
             editContent.setCustomValidity('');

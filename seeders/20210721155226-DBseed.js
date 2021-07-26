@@ -58,7 +58,7 @@ module.exports = {
           published: faker.datatype.number({ min: 0, max: 1 }),
           UserId: faker.random.arrayElement(JSON.parse(JSON.stringify(usersIds))).id,
           createdAt: new Date(),
-          updatedAt: this.createdAt
+          updatedAt: new Date(),
         }
       ))
       , {});
