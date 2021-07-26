@@ -116,8 +116,8 @@
                         <div class="input-group">
                             <div class="custom-file">
                                 <input type="file" class="form-control custom-file-input" accept="image/*"
-                                    id="addArtImage" required>
-                                <input name="image" type="hidden" value="NewImageURL">
+                                    id="addArtImage" name="imgFile" required>
+                                <input name="image" id="addArtImagePath" type="hidden">
                                 <label class="custom-file-label" for="addArtImage">Choose an image</label>
                             </div>
                         </div>
@@ -231,11 +231,19 @@
                         <label for="editArtImage">Image</label>
                         <div class="input-group">
                             <div class="custom-file">
-                                <input type="hidden" id="teporariyIMG" name="image">
-                                <input type="file" class="form-control custom-file-input" accept="image/*"
-                                    id="editArtImage">
+                                <input type="hidden" id="imgPathHolder" name="image">
+                                <input type="file" name="imgFile" class="form-control custom-file-input"
+                                    accept="image/*" id="editArtImage">
                                 <label class="custom-file-label" for="editArtImage">Choose an image</label>
                             </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editArtImagePreview">Image Preview</label>
+                        <div>
+                            <img id="editArtImagePreview" src="upload/articles/1627330210600_Article.png"
+                                alt="Article Image Preview" width="50%" height="50%">
                         </div>
                     </div>
 
@@ -409,10 +417,11 @@
                 success: function (data) {
                     console.log('Article data sent to modify modal successfully.');
                     $('#summernoteEdit').summernote('destroy');
+                    document.getElementById('editArtImagePreview').src = data.image.split('public')[1]
                     $('#editArtModal').modal('show')
                     document.getElementById('editArtTitle').value = data.title
                     document.getElementById('editArtContent').value = data.content
-                    document.getElementById('teporariyIMG').value = data.image
+                    document.getElementById('imgPathHolder').value = data.image
                     $('#summernoteEdit').summernote({
                         dialogsInBody: true,
                         toolbar: [
@@ -484,36 +493,9 @@
             }
         })
     }
-    $("#modifyArtBtn").click(function () {
-        var frm = $('#editArt-form')
-        if (!document.getElementById('editArt-form').checkValidity())
-            return;
-        $.ajax({
-            type: 'PUT',
-            url: 'articles/update',
-            data: frm.serialize(),
-            success: function (data) {
-                console.log('Article update was successful.');
-                $(document).Toasts('create', {
-                    title: data[0],
-                    autohide: true,
-                    delay: 6500,
-                    icon: data[1],
-                    class: data[2],
-                    body: data[3]
-                })
-                $('#editArtModal').modal('toggle')
-                updateTable('articles/getArticles?')
-            }
-        })
-        return false;
-    });
 
-    $("#addArtBtn").click(function () {
+    function addArticle() {
         var frm = $('#addArticle-form')
-        if (!document.getElementById('addArticle-form').checkValidity())
-            return;
-
         $.ajax({
             type: 'POST',
             url: 'articles/add?searchtext=' + urlParams.get('searchtext'),
@@ -533,6 +515,79 @@
                     $('#addArtModal').modal('toggle')
 
                 updateTable('articles/getArticles?')
+            }
+        });
+    }
+
+    function updateArticle() {
+        var frm = $('#editArt-form')
+        $.ajax({
+            type: 'PUT',
+            url: 'articles/update',
+            data: frm.serialize(),
+            success: function (data) {
+                console.log('Article update was successful.');
+                $(document).Toasts('create', {
+                    title: data[0],
+                    autohide: true,
+                    delay: 6500,
+                    icon: data[1],
+                    class: data[2],
+                    body: data[3]
+                })
+                $('#editArtModal').modal('toggle')
+                updateTable('articles/getArticles?')
+            }
+        })
+    }
+
+    $("#modifyArtBtn").click(function () {
+        var frm = $('#editArt-form')
+        if (!document.getElementById('editArt-form').checkValidity())
+            return;
+        $.ajax({
+            type: 'POST',
+            url: 'articles/upload',
+            data: new FormData(frm[0]),
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                console.log(this.data.get('image'))
+                console.log('Article image has been updated successfully.');
+                document.getElementById('imgPathHolder').value = data;
+                updateArticle()
+            },
+            error: function (xhr, textstatus, errorthrown) {
+                updateArticle()
+            }
+        })
+        return false;
+    });
+
+    $("#addArtBtn").click(function () {
+        var frm = $('#addArticle-form')
+        if (!document.getElementById('addArticle-form').checkValidity())
+            return;
+        $.ajax({
+            type: 'POST',
+            url: 'articles/upload',
+            data: new FormData(frm[0]),
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                console.log('Article image has been added successfully.');
+                document.getElementById('addArtImagePath').value = data;
+                addArticle();
+            },
+            error: function (xhr, status, error) {
+                $(document).Toasts('create', {
+                    title: xhr.responseJSON[0],
+                    autohide: true,
+                    delay: 6500,
+                    icon: xhr.responseJSON[1],
+                    class: xhr.responseJSON[2],
+                    body: xhr.responseJSON[3]
+                })
             }
         });
         return false;

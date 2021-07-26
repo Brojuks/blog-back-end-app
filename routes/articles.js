@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var articleRepo = require('../repositories/articles')
+const fs = require('fs');
 
 /* GET users listing. */
 router.get('/getArticles', async function (req, res, next) {
@@ -139,5 +140,35 @@ router.get('/search', async function (req, res, next) {
     }
     res.render('component/projectsTable.html', data)
 });
+
+router.post('/upload', async function (req, res) {
+    let uploadPath
+    let imageFile
+    if (req.body.image) {
+        console.log(req.body.image.split('public')[1])
+        fs.unlink(req.body.image, (err) => {
+            if (err) {
+                console.log("failed to delete local image:" + err);
+            } else {
+                console.log('successfully deleted local image');
+            }
+        });
+    }
+    if (!req.files || Object.keys(req.files).length === 0) {
+        return res.status(400).send(['An error has occured', 'fas fa-exclamation-triangle', 'm-2 bg-warning', 'No files were uploaded.']);
+    }
+    imageFile = req.files.imgFile
+    if (imageFile.mimetype !== ("image/png" || "image/jpg"))
+        return res.status(400).send(['An error has occured', 'fas fa-exclamation-triangle', 'm-2 bg-warning', 'Incorrect file type please choose either a png or a jpg file.'])
+    imageFile.name = new Date().getTime() + "_Article" + imageFile.name.slice(-4)
+    uploadPath = process.cwd() + '/public/upload/articles/' + imageFile.name;
+    imageFile.mv(uploadPath, function (err) {
+        if (err) {
+            console.log(err)
+            return res.status(500).send(['An error has occured', 'fas fa-exclamation-triangle', 'm-2 bg-warning', 'Internal Server Error']);
+        }
+        res.send(uploadPath)
+    });
+})
 
 module.exports = router;

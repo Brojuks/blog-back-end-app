@@ -1,2 +1,3 @@
 node_modules
 routes/restclient_testing.http
+public/upload

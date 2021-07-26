@@ -4,6 +4,7 @@ let cookieParser = require('cookie-parser')
 let logger = require('morgan')
 let nunjucks = require('nunjucks')
 let dateFilter = require('nunjucks-date-filter');
+let fileUpload = require('express-fileupload');
 
 let indexRouter = require('./routes/index')
 let usersRouter = require('./routes/users')
@@ -26,6 +27,7 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'public')))
+app.use(fileUpload())
 
 app.use('/', indexRouter)
 app.use('/users', usersRouter)
