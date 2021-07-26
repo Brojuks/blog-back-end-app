@@ -1,0 +1,561 @@
+{% extends 'layout.html' %}
+
+{% block include %}
+<link rel="stylesheet" href="plugins/summernote/summernote.min.css">
+{% endblock %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header row align-items-center">
+                <h3 class="card-title col">All Articles Table<span id="articlesCountBadge"
+                        class="badge badge-light ml-1">{{articlesCount}}</span>
+                </h3>
+                <div class="card-tools col row justify-content-end align-items-center">
+                    <p style="margin:0;">Number of rows :</p>
+                    <button class="btn btn-info mr-3 dropdown-toggle ml-1 text-center" type="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{limit}}</button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="?limit=5">5</a>
+                        <a class="dropdown-item" href="?limit=10">10</a>
+                        <a class="dropdown-item" href="?limit=20">20</a>
+                        <a class="dropdown-item" href="?limit=50">50</a>
+                        <a class="dropdown-item" href="?limit=100">100</a>
+                    </div>
+
+                    <button type="button" class="btn btn-info mr-3" data-toggle="modal" data-target="#addArtModal">
+                        <i class="fa fa-plus"></i>
+                        Add</button>
+                    <div class="input-group input-group-sm align-items-center" style="width: 150px;">
+                        <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
+
+                        <div class="input-group-append">
+                            <button type="submit" class="btn btn-default">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body table-responsive p-0">
+                <table class="table table-hover text-nowrap">
+                    <thead>
+                        <tr id="tableTitles">
+                            <th>ID</th>
+                            <th>Image</th>
+                            <th>Title</th>
+                            <th>Content</th>
+                            <th>Published</th>
+                            <th>Creation Date</th>
+                            <th>Last Update Date</th>
+                            <th>Created By</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="articlesTable">
+
+                        {% include "component/articlesTable.html" %}
+
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+
+    <!-- Pagination -->
+    <nav style="width: 100%;" aria-label="Page navigation example">
+        <ul id="pagination-tables" class="pagination justify-content-center">
+            {% include "component/pagination.html" %}
+        </ul>
+    </nav>
+    <!-- /.Pagination -->
+</div>
+
+<!-- Add Article Modal -->
+<div class="modal fade" id="addArtModal" tabindex="-1" role="dialog" aria-labelledby="addArtModalTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addArtModalTitle">Add Article</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <form id="addArticle-form" class="container needs-validation" novalidate>
+
+                    <div class="form-group">
+                        <label for="addArtTitle">Title</label>
+                        <input type="text" class="form-control" onkeyup="checkTitle()" id="addArtTitle" name="title"
+                            placeholder="Title" required>
+                        <div class="valid-feedback">
+                            Looks good!
+                        </div>
+                        <div class="invalid-feedback">
+                            The title is too short/long, please choose anothe one!
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="addArtImage">Image</label>
+                        <div class="input-group">
+                            <div class="custom-file">
+                                <input type="file" class="form-control custom-file-input" accept="image/*"
+                                    id="addArtImage" required>
+                                <input name="image" type="hidden" value="NewImageURL">
+                                <label class="custom-file-label" for="addArtImage">Choose an image</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="addArtContent">Content</label>
+                        <div id="summernote">Content goes here !</div>
+                        <input style="visibility: hidden;height: 0px;padding: 0;" type="text" class="form-control"
+                            name="content" id="addArtContent" required>
+                        <div class="valid-feedback">
+                            Looks good!
+                        </div>
+                        <div class="invalid-feedback">
+                            Content is too short!
+                        </div>
+                    </div>
+
+                    <input id="uncheckedVal" type="hidden" name="" value="0">
+
+                    <div class="form-group">
+                        <label for="addArtPublish">Publish?</label>
+                        <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                            <input type="checkbox" class="custom-control-input" name="published" id="addArtPublish"
+                                value="1" checked>
+                            <label class="custom-control-label" for="addArtPublish"><span
+                                    style="color: limegreen;">Green ='Yes'</span> <span
+                                    style="color: rgb(255, 98, 98);">Red =
+                                    'No'</span></label>
+                        </div>
+                    </div>
+
+                    <input type="hidden" name="UserId" value="1" required>
+
+
+                </form>
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button id="addArtBtn" type="submit" form="addArticle-form" class="btn btn-primary">
+                    <i class="fa fa-plus"></i>
+                    Add</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /.Add Article Modal -->
+
+<!-- Delete Article Modal -->
+
+<div class="modal fade" id="deleteArtModal" tabindex="-1" role="dialog" aria-labelledby="deleteArtModalTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteArtModalTitle">Are you sure you want to delete this Article?</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <h1 id="deleteArt-formTitle"></h1>
+                <form id="deleteArt-form">
+                    <input type="hidden" name="id" id="deleteArtId" value="" />
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button id="deleteArtIdBtn" type="button" class="btn btn-danger">
+                    <i class="fa fa-trash"></i>
+                    Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /.Delete Article Modal -->
+
+<!-- Edit Article Modal -->
+
+<div class="modal fade" id="editArtModal" tabindex="-1" role="dialog" aria-labelledby="editArtModalTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editArtModalTitle">Modify Article</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <form id="editArt-form" class="container needs-validation" novalidate>
+
+                    <div class="form-group">
+                        <label for="editArtTitle">Title</label>
+                        <input type="text" class="form-control" onkeyup="checkEditTitle()" id="editArtTitle"
+                            name="title" placeholder="Title" required>
+                        <div class="valid-feedback">
+                            Looks good!
+                        </div>
+                        <div class="invalid-feedback">
+                            The title is too short/long, please choose anothe one!
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editArtImage">Image</label>
+                        <div class="input-group">
+                            <div class="custom-file">
+                                <input type="hidden" id="teporariyIMG" name="image">
+                                <input type="file" class="form-control custom-file-input" accept="image/*"
+                                    id="editArtImage">
+                                <label class="custom-file-label" for="editArtImage">Choose an image</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editArtContent">Content</label>
+                        <div id="summernoteEdit"></div>
+                        <input style="visibility: hidden;height: 0px;padding: 0;" type="text" class="form-control"
+                            name="content" id="editArtContent" required>
+                        <div class="valid-feedback">
+                            Looks good!
+                        </div>
+                        <div class="invalid-feedback">
+                            Content is too short!
+                        </div>
+                    </div>
+
+                    <input id="uncheckedEditVal" type="hidden" name="" value="0">
+
+                    <div class="form-group">
+                        <label for="editArtPublish">Publish?</label>
+                        <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                            <input type="checkbox" class="custom-control-input" name="published" id="editArtPublish">
+                            <label class="custom-control-label" for="editArtPublish"><span
+                                    style="color: limegreen;">Green ='Yes'</span> <span
+                                    style="color: rgb(255, 98, 98);">Red =
+                                    'No'</span></label>
+                        </div>
+                    </div>
+
+                    <input type="hidden" id="editArtId" name="id" placeholder="ID">
+
+                </form>
+
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button id="modifyArtBtn" type="submit" form="editArt-form" class="btn btn-primary">
+                    <i class="fa fa-pen"></i>
+                    Edit</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /.Edit Article Modal -->
+{% endblock %}
+
+{% block javascript %}
+<script src="plugins/summernote/summernote.min.js"></script>
+<script src="plugins/bs-custom-file-input/bs-custom-file-input.min.js"></script>
+
+
+<script>
+    //  summernote inside Nested Bootstrap modal dialogs
+    $(document).on("hidden.bs.modal", '.modal', function (event) {
+        $(".modal:visible").length && $("body").addClass("modal-open");
+    });
+    // https://github.com/summernote/summernote/issues/2644
+
+    // For the custom looking file input
+    $(document).ready(function () {
+        bsCustomFileInput.init()
+    })
+
+    $("#addArtPublish").change(function () {
+        if (this.checked) {
+            $(this).val("1")
+            $("#uncheckedVal").attr('name', '')
+        } else {
+            $("#uncheckedVal").attr('name', 'published')
+        }
+    });
+
+    $("#editArtPublish").change(function () {
+        if (this.checked) {
+            $(this).val("1")
+            $("#uncheckedEditVal").attr('name', '')
+        } else {
+            $("#uncheckedEditVal").attr('name', 'published')
+        }
+    });
+
+    //Delete duplicate dropdown button from summernote
+    function deleteDuplicatedropdown() {
+        var elements = document.getElementsByClassName('note-icon-caret');
+        while (elements.length > 0) {
+            elements[0].parentNode.removeChild(elements[0]);
+        }
+    }
+
+    $('#addArtModal').on('show.bs.modal', function () {
+        $('#summernote').summernote({
+            dialogsInBody: true,
+            toolbar: [
+                ['style', ['style']],
+                ['font', ['bold', 'underline', 'italic', 'strikethrough', 'superscript', 'subscript', 'clear']],
+                ['fontname', ['fontname']],
+                ['color', ['color']],
+                ['para', ['ul', 'ol', 'paragraph', 'height']],
+                ['table', ['table']],
+                ['insert', ['link', 'picture', 'video']],
+                ['view', ['undo', 'redo', 'codeview']],
+            ],
+            callbacks: {
+                onChangeCodeview: function () {
+                    checkContent();
+                },
+                onInit: function () {
+                    checkContent();
+                    deleteDuplicatedropdown();
+                },
+                onChange: function () {
+                    checkContent();
+                }
+            }
+        });
+    })
+
+    function initTooltip() {
+        $(".DeleteBtn").hover(function () {
+            $(this).tooltip('show')
+        });
+        $(".ModifyBtn").hover(function () {
+            $(this).tooltip('show')
+        });
+    }
+
+    function initEvents() {
+        $(".DeleteBtn").click(function () {
+            var articleId = $(this).attr('data-articleId')
+            $("#deleteArtModal #deleteArtId").val(articleId);
+            $("#deleteArt-formTitle").html("ID : " + articleId);
+            $('#deleteArtModal').modal('show');
+            return false;
+        });
+
+        $("#deleteArtIdBtn").unbind().click(function () {
+            var frm = $("#deleteArt-form")
+            $.ajax({
+                type: 'DELETE',
+                url: 'articles/delete',
+                data: frm.serialize(),
+                success: function (data) {
+                    console.log('Article delete was successful.');
+                    document.getElementById('articlesCountBadge').innerHTML = data[4]
+                    $(document).Toasts('create', {
+                        title: data[0],
+                        autohide: true,
+                        delay: 6500,
+                        icon: data[1],
+                        class: data[2],
+                        body: data[3]
+                    })
+                    if (data[0] !== 'An error has occured')
+                        $('#deleteArtModal').modal('toggle')
+                    updateTable('articles/getArticles', 'articlesTable')
+                }
+            });
+        });
+
+        $(".ModifyBtn").click(function () {
+            var frm = $(this).parent()
+            $.ajax({
+                type: 'POST',
+                url: 'articles/getByID',
+                data: frm.serialize(),
+                success: function (data) {
+                    console.log('Article data sent to modify modal successfully.');
+                    $('#summernoteEdit').summernote('destroy');
+                    $('#editArtModal').modal('show')
+                    document.getElementById('editArtTitle').value = data.title
+                    document.getElementById('editArtContent').value = data.content
+                    document.getElementById('teporariyIMG').value = data.image
+                    $('#summernoteEdit').summernote({
+                        dialogsInBody: true,
+                        toolbar: [
+                            ['style', ['style']],
+                            ['font', ['bold', 'underline', 'italic', 'strikethrough', 'superscript', 'subscript', 'clear']],
+                            ['fontname', ['fontname']],
+                            ['color', ['color']],
+                            ['para', ['ul', 'ol', 'paragraph', 'height']],
+                            ['table', ['table']],
+                            ['insert', ['link', 'picture', 'video']],
+                            ['view', ['undo', 'redo', 'codeview']],
+                        ],
+                        callbacks: {
+                            onChangeCodeview: function () {
+                                checkEditContent();
+                            },
+                            onInit: function () {
+                                $("#summernoteEdit").summernote("code", data.content)
+                                checkEditContent();
+                                deleteDuplicatedropdown();
+                            },
+                            onChange: function () {
+                                checkEditContent();
+                            }
+                        }
+                    })
+                    document.getElementById('editArtPublish').value = data.published
+                    if (data.published) {
+                        document.getElementById('editArtPublish').checked = true;
+                        document.getElementById('uncheckedEditVal').setAttribute("name", "");
+                    } else {
+                        document.getElementById('editArtPublish').checked = false;
+                        document.getElementById('uncheckedEditVal').setAttribute("name", "published");
+                    }
+                    document.getElementById('editArtId').value = data.id
+                }
+            });
+            return false;
+        });
+    }
+
+    initTooltip()
+    const urlParams = new URLSearchParams(window.location.search);
+    initEvents()
+    function updateTable(url, tableId) {
+        $.ajax({
+            type: 'GET',
+            url: url + '?page=' + urlParams.get('page') + '&limit=' + urlParams.get('limit'),
+            success: function (data) {
+                console.log('table update was successful.');
+                document.getElementById(tableId).innerHTML = data
+                initEvents()
+                initTooltip()
+                $.ajax({
+                    type: 'GET',
+                    url: 'articles/getArticlesPagination?page=' + urlParams.get('page') + '&limit=' + urlParams.get('limit'),
+                    success: function (data) {
+                        document.getElementById('pagination-tables').innerHTML = data
+                        console.log('pagination updated.')
+                    }
+                })
+            }
+        })
+    }
+    $("#modifyArtBtn").click(function () {
+        var frm = $('#editArt-form')
+        console.log(frm.serialize())
+        if (!document.getElementById('editArt-form').checkValidity())
+            return;
+        $.ajax({
+            type: 'PUT',
+            url: 'articles/update',
+            data: frm.serialize(),
+            success: function (data) {
+                console.log('Article update was successful.');
+                $(document).Toasts('create', {
+                    title: data[0],
+                    autohide: true,
+                    delay: 6500,
+                    icon: data[1],
+                    class: data[2],
+                    body: data[3]
+                })
+                $('#editArtModal').modal('toggle')
+                updateTable('articles/getArticles', 'articlesTable')
+            }
+        })
+        return false;
+    });
+
+    $("#addArtBtn").click(function () {
+        var frm = $('#addArticle-form')
+        if (!document.getElementById('addArticle-form').checkValidity())
+            return;
+
+        $.ajax({
+            type: 'POST',
+            url: 'articles/add',
+            data: frm.serialize(),
+            success: function (data) {
+                console.log('Article add was successful.');
+                document.getElementById('articlesCountBadge').innerHTML = data[4]
+                $(document).Toasts('create', {
+                    title: data[0],
+                    autohide: true,
+                    delay: 6500,
+                    icon: data[1],
+                    class: data[2],
+                    body: data[3]
+                })
+                if (data[0] !== 'An error has occured')
+                    $('#addArtModal').modal('toggle')
+
+                updateTable('articles/getArticles', 'articlesTable')
+            }
+        });
+        return false;
+    });
+
+
+    function checkTitle() {
+        const Title = document.querySelector('#addArtTitle');
+        if (Title.value.length >= 2 && Title.value.length <= 80) {
+            Title.setCustomValidity('');
+        } else {
+            Title.setCustomValidity('This title is not valid!');
+        }
+    }
+    function checkEditTitle() {
+        const editTitle = document.querySelector('#editArtTitle');
+        if (editTitle.value.length >= 2 && editTitle.value.length <= 80) {
+            editTitle.setCustomValidity('');
+        } else {
+            editTitle.setCustomValidity('This title is not valid!');
+        }
+    }
+    function checkContent() {
+        const Content = document.querySelector('#addArtContent');
+        Content.value = $("#summernote").summernote("code");
+        if (Content.value.length >= 20) {
+            Content.setCustomValidity('');
+        } else {
+            Content.setCustomValidity('This Content is not valid!');
+        }
+    }
+    function checkEditContent() {
+        const editContent = document.querySelector('#editArtContent');
+        editContent.value = $("#summernoteEdit").summernote("code");
+        if (editContent.value.length >= 20) {
+            editContent.setCustomValidity('');
+        } else {
+            editContent.setCustomValidity('This Content is not valid!');
+        }
+    }
+
+</script>
+
+{% endblock %}

@@ -1,3 +1,7 @@
 .active a{
     color: white !important;
 }
+
+.note-modal .modal-header button{
+    order: 1;
+}

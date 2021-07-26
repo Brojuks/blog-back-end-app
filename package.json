@@ -17,6 +17,7 @@
     "node-fetch": "^2.6.1",
     "nodemon": "^2.0.12",
     "nunjucks": "^3.2.3",
+    "nunjucks-date-filter": "^0.1.1",
     "sequelize": "^6.6.5"
   }
 }

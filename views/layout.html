@@ -10,7 +10,7 @@
 
     <!-- AdminLTE Template -->
 
-    <!-- Google Font: Source Sans Pro -->   
+    <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <!-- Font Awesome Icons -->
@@ -20,6 +20,10 @@
     <!-- Theme style -->
     <link rel="stylesheet" href="dist/css/adminlte.min.css">
     <!-- AdminLTE Template -->
+
+    {% block include %}
+
+    {% endblock %}
 
     <title>{{ title }}</title>
 </head>
@@ -86,6 +90,16 @@
     {% endblock %}
 
     <script>
+        // Overlay Scrollbars
+        var osInstance = $('body').overlayScrollbars({ className: "os-theme-light", paddingAbsolute: true, scrollbars: { autoHide: "scroll" } }).overlayScrollbars();
+        $('body').on('show.bs.modal', function (e) {
+            osInstance.destroy();
+        });
+        $('body').on('hide.bs.modal', function () {
+            osInstance = $('body').overlayScrollbars({ className: "os-theme-light", paddingAbsolute: true, scrollbars: { autoHide: "scroll" } }).overlayScrollbars();
+        });
+
+
         (function () {
             'use strict'
 

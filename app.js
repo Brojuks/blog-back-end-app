@@ -3,6 +3,7 @@ let path = require('path')
 let cookieParser = require('cookie-parser')
 let logger = require('morgan')
 let nunjucks = require('nunjucks')
+let dateFilter = require('nunjucks-date-filter');
 
 let indexRouter = require('./routes/index')
 let usersRouter = require('./routes/users')
@@ -13,10 +14,12 @@ let projectsRouter = require('./routes/projects')
 let app = express()
 
 // configute Nunjucks with 'views' as templates directory
-nunjucks.configure('views', {
+let env = nunjucks.configure('views', {
     autoescape: true,
     express: app
 })
+
+env.addFilter('date', dateFilter);
 
 app.use(logger('dev'))
 app.use(express.json())

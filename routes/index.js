@@ -46,4 +46,29 @@ router.get('/users', async function (req, res, next) {
   }
   res.render('pages/users.html', data)
 })
+
+router.get('/articles', async function (req, res, next) {
+
+  let articlesCount = await articleRepo.countArticles()
+  let limit = parseInt(req.query.limit)
+  if (limit <= 0 || isNaN(limit))
+    req.query.limit = limit = 5
+  const pagesNum = Math.ceil(articlesCount / limit)
+  let page = parseInt(req.query.page)
+  if (page <= 0 || isNaN(page) || page > pagesNum)
+    req.query.page = page = 1
+  const offset = (page - 1) * limit
+  let articles = await articleRepo.getAllArticles(offset, limit)
+  console.log(articles)
+  let data = {
+    activePage: 'articles',
+    title: 'Articles',
+    articlesArray: articles,
+    page: page,
+    limit: limit,
+    articlesCount: articlesCount,
+    pagesNum: pagesNum
+  }
+  res.render('pages/articles.html', data)
+})
 module.exports = router;
