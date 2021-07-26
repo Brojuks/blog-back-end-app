@@ -27,8 +27,10 @@ module.exports = {
         });
     },
 
-    async searchForProject(searchText) {
+    async searchForProject(searchText, offset = 0, limit = 10) {
         return await Projects.findAndCountAll({
+            offset: offset,
+            limit: limit,
             where: {
                 [Op.or]: [
                     { title: { [Op.substring]: searchText } },

@@ -48,17 +48,31 @@ router.get('/users', async function (req, res, next) {
 })
 
 router.get('/articles', async function (req, res, next) {
-
-  let articlesCount = await articleRepo.countArticles()
   let limit = parseInt(req.query.limit)
   if (limit <= 0 || isNaN(limit))
     req.query.limit = limit = 5
+  let articlesCount
+  let searchtext = req.query.searchtext
+  if (!searchtext || searchtext == 'null') {
+    articlesCount = await articleRepo.countArticles()
+  }
+  else {
+    articlesCount = await articleRepo.searchForArticle(searchtext)
+    articlesCount = articlesCount.count
+  }
   const pagesNum = Math.ceil(articlesCount / limit)
   let page = parseInt(req.query.page)
   if (page <= 0 || isNaN(page) || page > pagesNum)
     req.query.page = page = 1
   const offset = (page - 1) * limit
-  let articles = await articleRepo.getAllArticles(offset, limit)
+  let articles
+  if (!searchtext || searchtext == 'null') {
+    articles = await articleRepo.getAllArticles(offset, limit)
+  }
+  else {
+    articles = await articleRepo.searchForArticle(searchtext, offset, limit)
+    articles = articles.rows
+  }
   let data = {
     activePage: 'articles',
     title: 'Articles',
@@ -66,23 +80,38 @@ router.get('/articles', async function (req, res, next) {
     page: page,
     limit: limit,
     articlesCount: articlesCount,
-    pagesNum: pagesNum
+    pagesNum: pagesNum,
+    searchtext: searchtext
   }
   res.render('pages/articles.html', data)
 })
 
 router.get('/projects', async function (req, res, next) {
-
-  let projectsCount = await projectRepo.countProjects()
   let limit = parseInt(req.query.limit)
   if (limit <= 0 || isNaN(limit))
     req.query.limit = limit = 5
+  let projectsCount
+  let searchtext = req.query.searchtext
+  if (!searchtext || searchtext == 'null') {
+    projectsCount = await projectRepo.countProjects()
+  }
+  else {
+    projectsCount = await projectRepo.searchForProject(searchtext)
+    projectsCount = projectsCount.count
+  }
   const pagesNum = Math.ceil(projectsCount / limit)
   let page = parseInt(req.query.page)
   if (page <= 0 || isNaN(page) || page > pagesNum)
     req.query.page = page = 1
   const offset = (page - 1) * limit
-  let projects = await projectRepo.getAllProjects(offset, limit)
+  let projects
+  if (!searchtext || searchtext == 'null') {
+    projects = await projectRepo.getAllProjects(offset, limit)
+  }
+  else {
+    projects = await projectRepo.searchForProject(searchtext, offset, limit)
+    projects = projects.rows
+  }
   let data = {
     activePage: 'projects',
     title: 'Projects',
@@ -90,7 +119,8 @@ router.get('/projects', async function (req, res, next) {
     page: page,
     limit: limit,
     projectsCount: projectsCount,
-    pagesNum: pagesNum
+    pagesNum: pagesNum,
+    searchtext: searchtext
   }
   res.render('pages/projects.html', data)
 })

@@ -10,8 +10,14 @@
     <div class="col-12">
         <div class="card">
             <div class="card-header row align-items-center">
-                <h3 class="card-title col">All Projects Table<span id="projectsCountBadge"
-                        class="badge badge-light ml-1">{{projectsCount}}</span>
+                <h3 class="card-title col">
+                    {% if searchtext %}
+                    Search result for "{{searchtext}}" on
+                    {% else %}
+                    All
+                    {% endif %}
+                    Projects Table
+                    <span id="projectsCountBadge" class="badge badge-light ml-1">{{projectsCount}}</span>
                 </h3>
                 <div class="card-tools col row justify-content-end align-items-center">
                     <p style="margin:0;">Number of rows :</p>
@@ -29,10 +35,12 @@
                         <i class="fa fa-plus"></i>
                         Add</button>
                     <div class="input-group input-group-sm align-items-center" style="width: 150px;">
-                        <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
+                        <input type="search" name="searchtext" id="searchBarText" class="form-control float-right"
+                            placeholder="Search" onsearch="searchForProject (this.value)">
 
                         <div class="input-group-append">
-                            <button type="submit" class="btn btn-default">
+                            <button type="button" id="searchBarBtn" class="btn btn-default"
+                                onclick="searchForProject(document.getElementById('searchBarText').value)">
                                 <i class="fas fa-search"></i>
                             </button>
                         </div>
@@ -288,9 +296,13 @@
     });
     // https://github.com/summernote/summernote/issues/2644
 
-    // For the custom looking file input
+    let urlParams = new URLSearchParams(window.location.search);
+
     $(document).ready(function () {
+        // For the custom looking file input
         bsCustomFileInput.init()
+        //initialize searchtext
+        $('#searchBarText').val(urlParams.get('searchtext'))
     })
 
     $("#addProjectPublish").change(function () {
@@ -369,7 +381,7 @@
             var frm = $("#deleteProject-form")
             $.ajax({
                 type: 'DELETE',
-                url: 'projects/delete',
+                url: 'projects/delete?searchtext=' + urlParams.get('searchtext'),
                 data: frm.serialize(),
                 success: function (data) {
                     console.log('Project delete was successful.');
@@ -384,7 +396,7 @@
                     })
                     if (data[0] !== 'An error has occured')
                         $('#deleteProjectModal').modal('toggle')
-                    updateTable('projects/getProjects', 'projectsTable')
+                    updateTable('projects/getProjects?')
                 }
             });
         });
@@ -444,20 +456,27 @@
     }
 
     initTooltip()
-    const urlParams = new URLSearchParams(window.location.search);
     initEvents()
-    function updateTable(url, tableId) {
+    function searchForProject(input) {
+        if (input)
+            window.location = ('/projects?searchtext=' + input)
+        else
+            window.location = ('/projects')
+        urlParams = new URLSearchParams(window.location.search)
+        updateTable('projects/search?searchtext=' + input + '&')
+    };
+    function updateTable(url) {
         $.ajax({
             type: 'GET',
-            url: url + '?page=' + urlParams.get('page') + '&limit=' + urlParams.get('limit'),
+            url: url + 'searchtext=' + urlParams.get('searchtext') + '&' + 'page=' + urlParams.get('page') + '&limit=' + urlParams.get('limit'),
             success: function (data) {
                 console.log('table update was successful.');
-                document.getElementById(tableId).innerHTML = data
+                document.getElementById('projectsTable').innerHTML = data
                 initEvents()
                 initTooltip()
                 $.ajax({
                     type: 'GET',
-                    url: 'projects/getProjectsPagination?page=' + urlParams.get('page') + '&limit=' + urlParams.get('limit'),
+                    url: 'projects/getProjectsPagination?' + 'searchtext=' + urlParams.get('searchtext') + '&' + 'page=' + urlParams.get('page') + '&limit=' + urlParams.get('limit'),
                     success: function (data) {
                         document.getElementById('pagination-tables').innerHTML = data
                         console.log('pagination updated.')
@@ -466,6 +485,7 @@
             }
         })
     }
+
     $("#modifyProjectBtn").click(function () {
         var frm = $('#editProject-form')
         if (!document.getElementById('editProject-form').checkValidity())
@@ -485,7 +505,7 @@
                     body: data[3]
                 })
                 $('#editProjectModal').modal('toggle')
-                updateTable('projects/getProjects', 'projectsTable')
+                updateTable('projects/getProjects?')
             }
         })
         return false;
@@ -498,7 +518,7 @@
 
         $.ajax({
             type: 'POST',
-            url: 'projects/add',
+            url: 'projects/add?searchtext=' + urlParams.get('searchtext'),
             data: frm.serialize(),
             success: function (data) {
                 console.log('Project add was successful.');
@@ -514,7 +534,7 @@
                 if (data[0] !== 'An error has occured')
                     $('#addProjectModal').modal('toggle')
 
-                updateTable('projects/getProjects', 'projectsTable')
+                updateTable('projects/getProjects?')
             }
         });
         return false;

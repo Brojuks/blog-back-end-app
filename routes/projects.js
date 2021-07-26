@@ -5,15 +5,30 @@ var projectRepo = require('../repositories/projects')
 /* GET users listing. */
 router.get('/getProjects', async function (req, res, next) {
     let page = parseInt(req.query.page)
-    let projectsCount = await projectRepo.countProjects()
     let limit = parseInt(req.query.limit)
     if (limit <= 0 || isNaN(limit))
         req.query.limit = limit = 5
+    let projectsCount
+    let searchtext = req.query.searchtext
+    if (!searchtext || searchtext == 'null') {
+        projectsCount = await projectRepo.countProjects()
+    }
+    else {
+        projectsCount = await projectRepo.searchForProject(searchtext)
+        projectsCount = projectsCount.count
+    }
     const pagesNum = Math.ceil(projectsCount / limit)
     if (page <= 0 || isNaN(page) || page > pagesNum)
         req.query.page = page = 1
     const offset = (page - 1) * limit
-    let projects = await projectRepo.getAllProjects(offset, limit)
+    let projects
+    if (!searchtext || searchtext == 'null') {
+        projects = await projectRepo.getAllProjects(offset, limit)
+    }
+    else {
+        projects = await projectRepo.searchForProject(searchtext, offset, limit)
+        projects = projects.rows
+    }
     let data = {
         projectsArray: projects,
         limit: limit
@@ -28,11 +43,20 @@ router.get('/getProjectsPagination', async function (req, res, next) {
     let limit = parseInt(req.query.limit)
     if (limit <= 0 || isNaN(limit))
         req.query.limit = limit = 5
-    let projectsCount = await projectRepo.countProjects()
+    let projectsCount
+    let searchtext = req.query.searchtext
+    if (!searchtext || searchtext == 'null') {
+        projectsCount = await projectRepo.countProjects()
+    }
+    else {
+        projectsCount = await projectRepo.searchForProject(searchtext)
+        projectsCount = projectsCount.count
+    }
     let data = {
         page: page,
         limit: limit,
-        pagesNum: Math.ceil(projectsCount / limit)
+        pagesNum: Math.ceil(projectsCount / limit),
+        searchtext: searchtext
     }
     res.render('component/pagination.html', data)
 });
@@ -53,7 +77,15 @@ router.post('/add', async function (req, res, next) {
     Project.published = req.body.published
     Project.UserId = req.body.UserId
     await projectRepo.addProject(Project)
-    let projectsCount = await projectRepo.countProjects()
+    let searchtext = req.query.searchtext
+    let projectsCount
+    if (!searchtext || searchtext == 'null') {
+        projectsCount = await projectRepo.countProjects()
+    }
+    else {
+        projectsCount = await projectRepo.searchForProject(searchtext)
+        projectsCount = projectsCount.count
+    }
     res.send(['Project has been added successfully', 'fas fa-check-circle', 'm-2 bg-success', , projectsCount])
 });
 
@@ -73,15 +105,38 @@ router.put('/update', async function (req, res, next) {
 
 router.delete('/delete', async function (req, res, next) {
     let projectIsDeleted = await projectRepo.deleteProject(req.body.id)
-    let projectsCount = await projectRepo.countProjects()
+    let searchtext = req.query.searchtext
+    let projectsCount
+    if (!searchtext || searchtext == 'null') {
+        projectsCount = await projectRepo.countProjects()
+    }
+    else {
+        projectsCount = await projectRepo.searchForProject(searchtext)
+        projectsCount = projectsCount.count
+    }
     if (projectIsDeleted)
         res.send(['Removed project #' + req.body.id + ' successfully', 'fas fa-check-circle', 'm-2 bg-danger', , projectsCount])
     else
         res.send(['An error has occured', 'fas fa-exclamation-triangle', 'm-2 bg-warning', , projectsCount])
 });
 
-router.get('/search/:searchtext', async function (req, res, next) {
-    res.send(await projectRepo.searchForProject(req.params.searchtext))
+router.get('/search', async function (req, res, next) {
+    let page = parseInt(req.query.page)
+    let projectsCount = await projectRepo.searchForProject(req.query.searchtext)
+    projectsCount = projectsCount.count
+    let limit = parseInt(req.query.limit)
+    if (limit <= 0 || isNaN(limit))
+        req.query.limit = limit = 5
+    const pagesNum = Math.ceil(projectsCount / limit)
+    if (page <= 0 || isNaN(page) || page > pagesNum)
+        req.query.page = page = 1
+    const offset = (page - 1) * limit
+    let projects = await projectRepo.searchForProject(req.query.searchtext, offset, limit)
+    let data = {
+        projectsArray: projects.rows,
+        limit: limit
+    }
+    res.render('component/projectsTable.html', data)
 });
 
 module.exports = router;

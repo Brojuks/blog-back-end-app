@@ -10,8 +10,14 @@
     <div class="col-12">
         <div class="card">
             <div class="card-header row align-items-center">
-                <h3 class="card-title col">All Articles Table<span id="articlesCountBadge"
-                        class="badge badge-light ml-1">{{articlesCount}}</span>
+                <h3 class="card-title col">
+                    {% if searchtext %}
+                    Search result for "{{searchtext}}" on
+                    {% else %}
+                    All
+                    {% endif %}
+                    Articles Table
+                    <span id="articlesCountBadge" class="badge badge-light ml-1">{{articlesCount}}</span>
                 </h3>
                 <div class="card-tools col row justify-content-end align-items-center">
                     <p style="margin:0;">Number of rows :</p>
@@ -29,10 +35,12 @@
                         <i class="fa fa-plus"></i>
                         Add</button>
                     <div class="input-group input-group-sm align-items-center" style="width: 150px;">
-                        <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
+                        <input type="search" name="searchtext" id="searchBarText" class="form-control float-right"
+                            placeholder="Search" onsearch="searchForArticle (this.value)">
 
                         <div class="input-group-append">
-                            <button type="submit" class="btn btn-default">
+                            <button type="button" id="searchBarBtn" class="btn btn-default"
+                                onclick="searchForArticle(document.getElementById('searchBarText').value)">
                                 <i class="fas fa-search"></i>
                             </button>
                         </div>
@@ -287,9 +295,13 @@
     });
     // https://github.com/summernote/summernote/issues/2644
 
-    // For the custom looking file input
+    let urlParams = new URLSearchParams(window.location.search);
+
     $(document).ready(function () {
+        // For the custom looking file input
         bsCustomFileInput.init()
+        //initialize searchtext
+        $('#searchBarText').val(urlParams.get('searchtext'))
     })
 
     $("#addArtPublish").change(function () {
@@ -368,7 +380,7 @@
             var frm = $("#deleteArt-form")
             $.ajax({
                 type: 'DELETE',
-                url: 'articles/delete',
+                url: 'articles/delete?searchtext=' + urlParams.get('searchtext'),
                 data: frm.serialize(),
                 success: function (data) {
                     console.log('Article delete was successful.');
@@ -383,7 +395,7 @@
                     })
                     if (data[0] !== 'An error has occured')
                         $('#deleteArtModal').modal('toggle')
-                    updateTable('articles/getArticles', 'articlesTable')
+                    updateTable('articles/getArticles?')
                 }
             });
         });
@@ -443,20 +455,27 @@
     }
 
     initTooltip()
-    const urlParams = new URLSearchParams(window.location.search);
     initEvents()
-    function updateTable(url, tableId) {
+    function searchForArticle(input) {
+        if (input)
+            window.location = ('/articles?searchtext=' + input)
+        else
+            window.location = ('/articles')
+        urlParams = new URLSearchParams(window.location.search)
+        updateTable('projects/search?searchtext=' + input + '&')
+    };
+    function updateTable(url) {
         $.ajax({
             type: 'GET',
-            url: url + '?page=' + urlParams.get('page') + '&limit=' + urlParams.get('limit'),
+            url: url + 'searchtext=' + urlParams.get('searchtext') + '&' + 'page=' + urlParams.get('page') + '&limit=' + urlParams.get('limit'),
             success: function (data) {
                 console.log('table update was successful.');
-                document.getElementById(tableId).innerHTML = data
+                document.getElementById('articlesTable').innerHTML = data
                 initEvents()
                 initTooltip()
                 $.ajax({
                     type: 'GET',
-                    url: 'articles/getArticlesPagination?page=' + urlParams.get('page') + '&limit=' + urlParams.get('limit'),
+                    url: 'articles/getArticlesPagination?' + 'searchtext=' + urlParams.get('searchtext') + '&' + 'page=' + urlParams.get('page') + '&limit=' + urlParams.get('limit'),
                     success: function (data) {
                         document.getElementById('pagination-tables').innerHTML = data
                         console.log('pagination updated.')
@@ -484,7 +503,7 @@
                     body: data[3]
                 })
                 $('#editArtModal').modal('toggle')
-                updateTable('articles/getArticles', 'articlesTable')
+                updateTable('articles/getArticles?')
             }
         })
         return false;
@@ -497,7 +516,7 @@
 
         $.ajax({
             type: 'POST',
-            url: 'articles/add',
+            url: 'articles/add?searchtext=' + urlParams.get('searchtext'),
             data: frm.serialize(),
             success: function (data) {
                 console.log('Article add was successful.');
@@ -513,7 +532,7 @@
                 if (data[0] !== 'An error has occured')
                     $('#addArtModal').modal('toggle')
 
-                updateTable('articles/getArticles', 'articlesTable')
+                updateTable('articles/getArticles?')
             }
         });
         return false;
