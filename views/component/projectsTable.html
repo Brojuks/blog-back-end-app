@@ -3,7 +3,8 @@
 {% for project in projectsArray %}
 <tr>
     <td>{{ project.id }}</td>
-    <td>{{ project.image.substring(0, 20).trimEnd()+'...' }}</td>
+    <td><img style="object-fit: cover;" src="{{ project.image.split('public')[1] }}" alt="Project Image" width="80px"
+            height="40px"></td>
     <td>{{ project.title.substring(0, 20).trimEnd()+'...' }}</td>
     <td>{{ project.content.substring(0, 30).trimEnd()+'...' }}</td>
     <td> {% if project.published === true %}
@@ -17,7 +18,8 @@
     <td>{{ project.User.username }}</td>
     <td style="position: relative;">
         <form id="project{{project.id}}Form">
-            <button class="btn bg-danger DeleteBtn" data-projectId="{{project.id}}" title="Delete" type="button">
+            <button class="btn bg-danger DeleteBtn" data-projectId="{{project.id}}" data-projectImg="{{project.image}}"
+                title="Delete" type="button">
                 <i class="fas fa-trash-alt"></i>
             </button>
             <button style="max-width: 40px !important;padding: auto !important; margin-left: 5px;"

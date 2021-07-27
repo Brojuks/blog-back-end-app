@@ -1,3 +1,6 @@
 node_modules
 routes/restclient_testing.http
-public/upload
+public/upload/articles/*
+!public/upload/articles/default_Article.png
+public/upload/projects/*
+!public/upload/projects/default_Project.png

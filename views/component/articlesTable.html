@@ -3,7 +3,8 @@
 {% for article in articlesArray %}
 <tr>
     <td>{{ article.id }}</td>
-    <td>{{ article.image.substring(0, 20).trimEnd()+'...' }}</td>
+    <td><img style="object-fit: cover;" src="{{ article.image.split('public')[1] }}" alt="Article Image" width="80px"
+            height="40px"></td>
     <td>{{ article.title.substring(0, 20).trimEnd()+'...' }}</td>
     <td>{{ article.content.substring(0, 30).trimEnd()+'...' }}</td>
     <td> {% if article.published === true %}
@@ -17,7 +18,8 @@
     <td>{{ article.User.username }}</td>
     <td style="position: relative;">
         <form id="article{{article.id}}Form">
-            <button class="btn bg-danger DeleteBtn" data-articleId="{{article.id}}" title="Delete" type="button">
+            <button class="btn bg-danger DeleteBtn" data-articleId="{{article.id}}"
+                data-articleImg="{{ article.image }}" title="Delete" type="button">
                 <i class="fas fa-trash-alt"></i>
             </button>
             <button style="max-width: 40px !important;padding: auto !important; margin-left: 5px;"

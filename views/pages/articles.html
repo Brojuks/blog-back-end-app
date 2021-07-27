@@ -115,7 +115,7 @@
                         <label for="addArtImage">Image</label>
                         <div class="input-group">
                             <div class="custom-file">
-                                <input type="file" class="form-control custom-file-input" accept="image/*"
+                                <input type="file" class="form-control custom-file-input" accept="image/png, image/jpeg"
                                     id="addArtImage" name="imgFile" required>
                                 <input name="image" id="addArtImagePath" type="hidden">
                                 <label class="custom-file-label" for="addArtImage">Choose an image</label>
@@ -185,6 +185,7 @@
                 <h1 id="deleteArt-formTitle"></h1>
                 <form id="deleteArt-form">
                     <input type="hidden" name="id" id="deleteArtId" value="" />
+                    <input type="hidden" name="image" id="deleteArtImg" value="" />
                 </form>
             </div>
 
@@ -231,9 +232,9 @@
                         <label for="editArtImage">Image</label>
                         <div class="input-group">
                             <div class="custom-file">
-                                <input type="hidden" id="imgPathHolder" name="image">
+                                <input type="hidden" id="imgPathHolder" name="imageEdit">
                                 <input type="file" name="imgFile" class="form-control custom-file-input"
-                                    accept="image/*" id="editArtImage">
+                                    accept="image/png, image/jpeg" id="editArtImage">
                                 <label class="custom-file-label" for="editArtImage">Choose an image</label>
                             </div>
                         </div>
@@ -241,8 +242,8 @@
 
                     <div class="form-group">
                         <label for="editArtImagePreview">Image Preview</label>
-                        <div>
-                            <img id="editArtImagePreview" src="upload/articles/1627330210600_Article.png"
+                        <div class="text-center">
+                            <img id="editArtImagePreview" src="upload/articles/default_Article.png"
                                 alt="Article Image Preview" width="50%" height="50%">
                         </div>
                     </div>
@@ -378,7 +379,9 @@
     function initEvents() {
         $(".DeleteBtn").click(function () {
             var articleId = $(this).attr('data-articleId')
+            var articleImg = $(this).attr('data-articleImg')
             $("#deleteArtModal #deleteArtId").val(articleId);
+            $("#deleteArtModal #deleteArtImg").val(articleImg);
             $("#deleteArt-formTitle").html("ID : " + articleId);
             $('#deleteArtModal').modal('show');
             return false;

@@ -115,9 +115,9 @@
                         <label for="addProjectImage">Image</label>
                         <div class="input-group">
                             <div class="custom-file">
-                                <input type="file" class="form-control custom-file-input" accept="image/*"
-                                    id="addProjectImage" required>
-                                <input name="image" type="hidden" value="NewImageURL">
+                                <input type="file" class="form-control custom-file-input" accept="image/png, image/jpeg"
+                                    id="addProjectImage" name="imgFile" required>
+                                <input name="image" id="addProjectImagePath" type="hidden">
                                 <label class="custom-file-label" for="addProjectImage">Choose an image</label>
                             </div>
                         </div>
@@ -185,6 +185,7 @@
                 <h1 id="deleteProject-formTitle"></h1>
                 <form id="deleteProject-form">
                     <input type="hidden" name="id" id="deleteProjectId" value="" />
+                    <input type="hidden" name="image" id="deleteProjectImg" value="" />
                 </form>
             </div>
 
@@ -231,11 +232,19 @@
                         <label for="editProjectImage">Image</label>
                         <div class="input-group">
                             <div class="custom-file">
-                                <input type="hidden" id="teporariyIMG" name="image">
-                                <input type="file" class="form-control custom-file-input" accept="image/*"
-                                    id="editProjectImage">
+                                <input type="hidden" id="imgPathHolder" name="imageEdit">
+                                <input type="file" name="imgFile" class="form-control custom-file-input"
+                                    accept="image/png, image/jpeg" id="editProjectImage">
                                 <label class="custom-file-label" for="editProjectImage">Choose an image</label>
                             </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editProjectImagePreview">Image Preview</label>
+                        <div class="text-center">
+                            <img id="editProjectImagePreview" src="upload/projects/default_Project.png"
+                                alt="Project Image Preview" width="50%" height="50%">
                         </div>
                     </div>
 
@@ -371,7 +380,9 @@
     function initEvents() {
         $(".DeleteBtn").click(function () {
             var projectId = $(this).attr('data-projectId')
+            var projectImg = $(this).attr('data-projectImg')
             $("#deleteProjectModal #deleteProjectId").val(projectId);
+            $("#deleteProjectModal #deleteProjectImg").val(projectImg);
             $("#deleteProject-formTitle").html("ID : " + projectId);
             $('#deleteProjectModal').modal('show');
             return false;
@@ -410,10 +421,11 @@
                 success: function (data) {
                     console.log('Project data sent to modify modal successfully.');
                     $('#summernoteEdit').summernote('destroy');
+                    document.getElementById('editProjectImagePreview').src = data.image.split('public')[1]
                     $('#editProjectModal').modal('show')
                     document.getElementById('editProjectTitle').value = data.title
                     document.getElementById('editProjectContent').value = data.content
-                    document.getElementById('teporariyIMG').value = data.image
+                    document.getElementById('imgPathHolder').value = data.image
                     $('#summernoteEdit').summernote({
                         dialogsInBody: true,
                         toolbar: [
@@ -486,7 +498,33 @@
         })
     }
 
-    $("#modifyProjectBtn").click(function () {
+    function addProject() {
+        var frm = $('#addProject-form')
+        $.ajax({
+            type: 'POST',
+            url: 'projects/add?searchtext=' + urlParams.get('searchtext'),
+            data: frm.serialize(),
+            success: function (data) {
+                console.log('Project add was successful.');
+                console.log(this.data)
+                document.getElementById('projectsCountBadge').innerHTML = data[4]
+                $(document).Toasts('create', {
+                    title: data[0],
+                    autohide: true,
+                    delay: 6500,
+                    icon: data[1],
+                    class: data[2],
+                    body: data[3]
+                })
+                if (data[0] !== 'An error has occured')
+                    $('#addProjectModal').modal('toggle')
+
+                updateTable('projects/getProjects?')
+            }
+        });
+    }
+
+    function updateProject() {
         var frm = $('#editProject-form')
         if (!document.getElementById('editProject-form').checkValidity())
             return;
@@ -508,6 +546,28 @@
                 updateTable('projects/getProjects?')
             }
         })
+    }
+
+    $("#modifyProjectBtn").click(function () {
+        var frm = $('#editProject-form')
+        if (!document.getElementById('editProject-form').checkValidity())
+            return;
+        $.ajax({
+            type: 'POST',
+            url: 'projects/upload',
+            data: new FormData(frm[0]),
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                console.log(this.data.get('image'))
+                console.log('Project image has been updated successfully.');
+                document.getElementById('imgPathHolder').value = data;
+                updateProject()
+            },
+            error: function (xhr, textstatus, errorthrown) {
+                updateProject()
+            }
+        })
         return false;
     });
 
@@ -515,26 +575,26 @@
         var frm = $('#addProject-form')
         if (!document.getElementById('addProject-form').checkValidity())
             return;
-
         $.ajax({
             type: 'POST',
-            url: 'projects/add?searchtext=' + urlParams.get('searchtext'),
-            data: frm.serialize(),
+            url: 'projects/upload',
+            data: new FormData(frm[0]),
+            processData: false,
+            contentType: false,
             success: function (data) {
-                console.log('Project add was successful.');
-                document.getElementById('projectsCountBadge').innerHTML = data[4]
+                console.log('Project image has been added successfully.');
+                document.getElementById('addProjectImagePath').value = data;
+                addProject();
+            },
+            error: function (xhr, status, error) {
                 $(document).Toasts('create', {
-                    title: data[0],
+                    title: xhr.responseJSON[0],
                     autohide: true,
                     delay: 6500,
-                    icon: data[1],
-                    class: data[2],
-                    body: data[3]
+                    icon: xhr.responseJSON[1],
+                    class: xhr.responseJSON[2],
+                    body: xhr.responseJSON[3]
                 })
-                if (data[0] !== 'An error has occured')
-                    $('#addProjectModal').modal('toggle')
-
-                updateTable('projects/getProjects?')
             }
         });
         return false;

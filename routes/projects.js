@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var projectRepo = require('../repositories/projects')
+const fs = require('fs');
 
 /* GET users listing. */
 router.get('/getProjects', async function (req, res, next) {
@@ -93,7 +94,7 @@ router.put('/update', async function (req, res, next) {
     let Project = {}
     Project.id = req.body.id
     Project.title = req.body.title
-    Project.image = req.body.image
+    Project.image = req.body.imageEdit
     Project.content = req.body.content
     Project.published = req.body.published
     let projectIsModified = await projectRepo.updateProject(Project)
@@ -105,6 +106,13 @@ router.put('/update', async function (req, res, next) {
 
 router.delete('/delete', async function (req, res, next) {
     let projectIsDeleted = await projectRepo.deleteProject(req.body.id)
+    fs.unlink(req.body.image, (err) => {
+        if (err) {
+            console.log("failed to delete local image:" + err);
+        } else {
+            console.log('successfully deleted local image');
+        }
+    });
     let searchtext = req.query.searchtext
     let projectsCount
     if (!searchtext || searchtext == 'null') {
@@ -138,5 +146,34 @@ router.get('/search', async function (req, res, next) {
     }
     res.render('component/projectsTable.html', data)
 });
+
+router.post('/upload', async function (req, res) {
+    let uploadPath
+    let imageFile
+    if (req.body.imageEdit) {
+        fs.unlink(req.body.imageEdit, (err) => {
+            if (err) {
+                console.log("failed to delete local image:" + err);
+            } else {
+                console.log('successfully deleted local image');
+            }
+        });
+    }
+    if (!req.files || Object.keys(req.files).length === 0) {
+        return res.status(400).send(['An error has occured', 'fas fa-exclamation-triangle', 'm-2 bg-warning', 'No files were uploaded.']);
+    }
+    imageFile = req.files.imgFile
+    if (imageFile.mimetype !== ("image/png" || "image/jpeg"))
+        return res.status(400).send(['An error has occured', 'fas fa-exclamation-triangle', 'm-2 bg-warning', 'Incorrect file type please choose either a png or a jpg file.'])
+    imageFile.name = new Date().getTime() + "_Project" + imageFile.name.slice(-4)
+    uploadPath = process.cwd() + '/public/upload/projects/' + imageFile.name;
+    imageFile.mv(uploadPath, function (err) {
+        if (err) {
+            console.log(err)
+            return res.status(500).send(['An error has occured', 'fas fa-exclamation-triangle', 'm-2 bg-warning', 'Internal Server Error']);
+        }
+        res.send(uploadPath)
+    });
+})
 
 module.exports = router;

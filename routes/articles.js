@@ -95,7 +95,7 @@ router.put('/update', async function (req, res, next) {
     let Article = {}
     Article.id = req.body.id
     Article.title = req.body.title
-    Article.image = req.body.image
+    Article.image = req.body.imageEdit
     Article.content = req.body.content
     Article.published = req.body.published
     let articleIsModified = await articleRepo.updateArticle(Article)
@@ -107,6 +107,13 @@ router.put('/update', async function (req, res, next) {
 
 router.delete('/delete', async function (req, res, next) {
     let articleIsDeleted = await articleRepo.deleteArticle(req.body.id)
+    fs.unlink(req.body.image, (err) => {
+        if (err) {
+            console.log("failed to delete local image:" + err);
+        } else {
+            console.log('successfully deleted local image');
+        }
+    });
     let articlesCount
     let searchtext = req.query.searchtext
     if (!searchtext || searchtext == 'null') {
@@ -144,9 +151,8 @@ router.get('/search', async function (req, res, next) {
 router.post('/upload', async function (req, res) {
     let uploadPath
     let imageFile
-    if (req.body.image) {
-        console.log(req.body.image.split('public')[1])
-        fs.unlink(req.body.image, (err) => {
+    if (req.body.imageEdit) {
+        fs.unlink(req.body.imageEdit, (err) => {
             if (err) {
                 console.log("failed to delete local image:" + err);
             } else {
@@ -158,7 +164,7 @@ router.post('/upload', async function (req, res) {
         return res.status(400).send(['An error has occured', 'fas fa-exclamation-triangle', 'm-2 bg-warning', 'No files were uploaded.']);
     }
     imageFile = req.files.imgFile
-    if (imageFile.mimetype !== ("image/png" || "image/jpg"))
+    if (imageFile.mimetype !== ("image/png" || "image/jpeg"))
         return res.status(400).send(['An error has occured', 'fas fa-exclamation-triangle', 'm-2 bg-warning', 'Incorrect file type please choose either a png or a jpg file.'])
     imageFile.name = new Date().getTime() + "_Article" + imageFile.name.slice(-4)
     uploadPath = process.cwd() + '/public/upload/articles/' + imageFile.name;
