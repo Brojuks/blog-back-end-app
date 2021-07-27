@@ -34,7 +34,7 @@ module.exports = {
       [...Array(50)].map((article) => (
         {
           title: faker.lorem.sentence(3, 3),
-          image: 'upload/articles/default_Article.png',
+          image: process.cwd() + "/public/upload/articles/default_Article.png",
           content: faker.lorem.paragraphs(2),
           published: faker.datatype.number({ min: 0, max: 1 }),
           UserId: faker.random.arrayElement(JSON.parse(JSON.stringify(usersIds))).id,
@@ -53,7 +53,7 @@ module.exports = {
       [...Array(50)].map((project) => (
         {
           title: faker.lorem.sentence(3, 3),
-          image: 'upload/projects/default_Project.png',
+          image: process.cwd() + "/public/upload/projects/default_Project.png",
           content: faker.lorem.paragraphs(2),
           published: faker.datatype.number({ min: 0, max: 1 }),
           UserId: faker.random.arrayElement(JSON.parse(JSON.stringify(usersIds))).id,
