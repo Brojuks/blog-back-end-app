@@ -3,6 +3,19 @@ var router = express.Router();
 var projectRepo = require('../repositories/projects')
 const fs = require('fs');
 
+
+/* REST API */
+router.get('/all', async function (req, res, next) {
+    res.json(await projectRepo.AllProjects())
+});
+router.get('/lastsix', async function (req, res, next) {
+    res.json(await projectRepo.getLastSixProjects())
+});
+router.get('/:id', async function (req, res, next) {
+    res.json(await projectRepo.getProjectById(req.params.id))
+});
+/* ./REST API */
+
 /* GET users listing. */
 router.get('/getProjects', async function (req, res, next) {
     let page = parseInt(req.query.page)
