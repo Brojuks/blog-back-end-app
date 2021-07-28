@@ -11,6 +11,8 @@ let usersRouter = require('./routes/users')
 let tagsRouter = require('./routes/tags')
 let articlesRouter = require('./routes/articles')
 let projectsRouter = require('./routes/projects')
+let apiArticlesRouter = require('./routes/api/articles')
+let apiProjectsRouter = require('./routes/api/projects')
 
 let app = express()
 
@@ -34,5 +36,7 @@ app.use('/users', usersRouter)
 app.use('/articles', articlesRouter)
 app.use('/projects', projectsRouter)
 app.use('/tags', tagsRouter)
+app.use('/api/v1/articles', apiArticlesRouter)
+app.use('/api/v1/projects', apiProjectsRouter)
 
 module.exports = app

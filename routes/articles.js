@@ -4,18 +4,6 @@ var articleRepo = require('../repositories/articles')
 const fs = require('fs');
 
 
-/* REST API */
-
-/* ./REST API */
-router.get('/all', async function (req, res, next) {
-    res.json(await articleRepo.AllArticles())
-});
-router.get('/lastsix', async function (req, res, next) {
-    res.json(await articleRepo.getLastSixArticles())
-});
-router.get('/:id', async function (req, res, next) {
-    res.json(await articleRepo.getArticleById(req.params.id))
-});
 /* GET users listing. */
 router.get('/getArticles', async function (req, res, next) {
     let page = parseInt(req.query.page)
