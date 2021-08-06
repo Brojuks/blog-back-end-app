@@ -108,13 +108,15 @@ router.put('/update', async function (req, res, next) {
 
 router.delete('/delete', async function (req, res, next) {
     let articleIsDeleted = await articleRepo.deleteArticle(req.body.id)
-    fs.unlink(req.body.image, (err) => {
-        if (err) {
-            console.log("failed to delete local image:" + err);
-        } else {
-            console.log('successfully deleted local image');
-        }
-    });
+    if (req.body.image.split('articles')[1] !== "/default_Article.png") {
+        fs.unlink(req.body.image, (err) => {
+            if (err) {
+                console.log("failed to delete local image:" + err);
+            } else {
+                console.log('successfully deleted local image');
+            }
+        })
+    };
     let articlesCount
     let searchtext = req.query.searchtext
     if (!searchtext || searchtext == 'null') {
@@ -152,7 +154,7 @@ router.get('/search', async function (req, res, next) {
 router.post('/upload', async function (req, res) {
     let uploadPath
     let imageFile
-    if (req.body.imageEdit) {
+    if (req.body.imageEdit && req.body.imageEdit.split('articles')[1] !== "/default_Article.png") {
         fs.unlink(req.body.imageEdit, (err) => {
             if (err) {
                 console.log("failed to delete local image:" + err);
