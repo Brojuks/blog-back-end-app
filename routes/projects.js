@@ -166,8 +166,11 @@ router.post('/upload', async function (req, res) {
         return res.status(400).send(['An error has occured', 'fas fa-exclamation-triangle', 'm-2 bg-warning', 'No files were uploaded.']);
     }
     imageFile = req.files.imgFile
-    if (imageFile.mimetype !== ("image/png" || "image/jpeg"))
-        return res.status(400).send(['An error has occured', 'fas fa-exclamation-triangle', 'm-2 bg-warning', 'Incorrect file type please choose either a png or a jpg file.'])
+    if (imageFile.mimetype !== "image/png") {
+        if (imageFile.mimetype !== "image/jpeg") {
+            return res.status(400).send(['An error has occured', 'fas fa-exclamation-triangle', 'm-2 bg-warning', 'Incorrect file type please choose either a png or a jpg file.'])
+        }
+    }
     imageFile.name = new Date().getTime() + "_Project" + imageFile.name.slice(-4)
     uploadPath = process.cwd() + '/public/upload/projects/' + imageFile.name;
     imageFile.mv(uploadPath, function (err) {
